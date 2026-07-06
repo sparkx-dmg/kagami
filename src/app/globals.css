@@ -1,0 +1,403 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Color Tokens - Light mode (Warm Minimalist Sand / Editorial Alabaster) */
+  --background: #FAF8F5;
+  --surface: #F3EFEA;
+  --surface-solid: #EFEBE4;
+  --text-primary: #151413;
+  --text-muted: #6E6A63;
+  --border: #E3DCD2;
+  
+  --accent-base: #C2410C;
+  --accent-foreground: #FFFFFF;
+}
+
+/* Accent Class Overrides - Light Mode */
+html.accent-crimson {
+  --accent-base: #BE123C;
+}
+html.accent-grove {
+  --accent-base: #15803D;
+}
+html.accent-amber {
+  --accent-base: #B45309;
+}
+html.accent-mono {
+  --accent-base: #151413;
+}
+html.accent-sakura {
+  --accent-base: #BE185D;
+}
+html.accent-terracotta {
+  --accent-base: #B45309;
+}
+html.accent-wasabi {
+  --accent-base: #4D7C0F;
+}
+
+/* Dark Mode (Obsidian & Charcoal Slate) overrides */
+html.dark {
+  --background: #060606;
+  --surface: #0E0E0E;
+  --surface-solid: #151515;
+  --text-primary: #F4F4F3;
+  --text-muted: #85837F;
+  --border: #1A1A19;
+  
+  --accent-base: #F97316;
+  --accent-foreground: #060606;
+}
+
+/* Accent Class Overrides - Dark Mode */
+html.dark.accent-crimson {
+  --accent-base: #E11D48;
+  --accent-foreground: #060606;
+}
+html.dark.accent-grove {
+  --accent-base: #10B981;
+  --accent-foreground: #060606;
+}
+html.dark.accent-amber {
+  --accent-base: #F59E0B;
+  --accent-foreground: #060606;
+}
+html.dark.accent-mono {
+  --accent-base: #F4F4F3;
+  --accent-foreground: #060606;
+}
+html.dark.accent-sakura {
+  --accent-base: #EC4899;
+  --accent-foreground: #060606;
+}
+html.dark.accent-terracotta {
+  --accent-base: #EA580C;
+  --accent-foreground: #060606;
+}
+html.dark.accent-wasabi {
+  --accent-base: #84CC16;
+  --accent-foreground: #060606;
+}
+
+/* ─── Theme: Sepia Parchment (warm aged-paper light) ───────────────────── */
+html.theme-sepia {
+  --background: #F4ECCF;
+  --surface: #EADFB8;
+  --surface-solid: #DECFA0;
+  --text-primary: #2C220E;
+  --text-muted: #736140;
+  --border: #D1BE93;
+}
+html.theme-sepia.accent-crimson  { --accent-base: #9F1239; }
+html.theme-sepia.accent-grove    { --accent-base: #166534; }
+html.theme-sepia.accent-amber    { --accent-base: #92400E; }
+html.theme-sepia.accent-mono     { --accent-base: #2C220E; }
+html.theme-sepia.accent-sakura   { --accent-base: #9D174D; }
+html.theme-sepia.accent-terracotta { --accent-base: #9A3412; }
+html.theme-sepia.accent-wasabi   { --accent-base: #3F6212; }
+
+/* ─── Theme: Forest Night (deep mossy dark green) ──────────────────────── */
+html.theme-forest {
+  --background: #080D0A;
+  --surface: #0E1511;
+  --surface-solid: #15221B;
+  --text-primary: #E6ECE8;
+  --text-muted: #6E8876;
+  --border: #16241D;
+  --accent-base: #22C55E;
+  --accent-foreground: #080D0A;
+}
+html.theme-forest.accent-crimson  { --accent-base: #EF4444; --accent-foreground: #080D0A; }
+html.theme-forest.accent-grove    { --accent-base: #22C55E; --accent-foreground: #080D0A; }
+html.theme-forest.accent-amber    { --accent-base: #F59E0B; --accent-foreground: #080D0A; }
+html.theme-forest.accent-mono     { --accent-base: #E6ECE8; --accent-foreground: #080D0A; }
+html.theme-forest.accent-sakura   { --accent-base: #EC4899; --accent-foreground: #080D0A; }
+html.theme-forest.accent-terracotta { --accent-base: #F97316; --accent-foreground: #080D0A; }
+html.theme-forest.accent-wasabi   { --accent-base: #84CC16; --accent-foreground: #080D0A; }
+
+/* ─── Theme: Charcoal (pure neutral-grey dark) ─────────────────────────── */
+html.theme-charcoal {
+  --background: #0F0F0F;
+  --surface: #171717;
+  --surface-solid: #222222;
+  --text-primary: #ECECEC;
+  --text-muted: #808080;
+  --border: #262626;
+  --accent-base: #E5E5E5;
+  --accent-foreground: #0F0F0F;
+}
+html.theme-charcoal.accent-crimson  { --accent-base: #F43F5E; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-grove    { --accent-base: #10B981; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-amber    { --accent-base: #F59E0B; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-mono     { --accent-base: #ECECEC; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-sakura   { --accent-base: #F472B6; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-terracotta { --accent-base: #F97316; --accent-foreground: #0F0F0F; }
+html.theme-charcoal.accent-wasabi   { --accent-base: #A3E635; --accent-foreground: #0F0F0F; }
+
+@theme {
+  --color-bg-app: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-border-divider: var(--border);
+  --color-accent: var(--accent-base);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+}
+
+/* Accessibility options */
+html.reduced-motion * {
+  animation-delay: -1ms !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  background-attachment: initial !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+html.high-contrast {
+  --border: #000000;
+  --text-muted: #1c1c1c;
+  --surface: #ffffff;
+}
+html.dark.high-contrast {
+  --border: #FFFFFF;
+  --text-muted: #E5E7EB;
+  --surface: #111827;
+}
+
+/* Accessibility Base Font Sizes */
+html.text-sm {
+  font-size: 14px;
+}
+html.text-base {
+  font-size: 16px;
+}
+html.text-lg {
+  font-size: 18px;
+}
+html.text-xl {
+  font-size: 20px;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  position: relative;
+  transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Premium micro-grid pattern for editorial texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.05;
+  background-size: 24px 24px;
+  background-image: 
+    linear-gradient(to right, var(--text-primary) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--text-primary) 1px, transparent 1px);
+}
+
+html.dark body::before {
+  opacity: 0.025;
+}
+
+/* Accent glowing orb background (Warm Red/Amber/Grove/etc - NEVER blue/purple) */
+body::after {
+  content: "";
+  position: fixed;
+  top: -10%;
+  right: -5%;
+  width: 50vw;
+  height: 50vw;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.07;
+  filter: blur(120px);
+  background: radial-gradient(circle, var(--accent-base) 0%, transparent 70%);
+}
+
+html.dark body::after {
+  opacity: 0.12;
+}
+
+/* Glassmorphism class helpers */
+.glass-panel {
+  background-color: color-mix(in srgb, var(--surface) 75%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-base);
+}
+
+/* Focus Ring */
+*:focus-visible {
+  outline: 2px solid var(--accent-base);
+  outline-offset: 4px;
+}
+
+/* High-end Editorial Typography */
+h1, h2, h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  text-transform: none;
+}
+
+h4, h5, h6, .heading-sans {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+/* Enable native Cross-document View Transitions */
+@view-transition {
+  navigation: auto;
+}
+
+/* ─── Global Keyframe Animations ──────────────────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-base) 30%, transparent); }
+  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent-base) 0%, transparent); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes accent-border-in {
+  from { border-color: var(--border); }
+  to   { border-color: var(--accent-base); }
+}
+
+/* ─── Utility Animation Classes ────────────────────────────────────────────── */
+
+.animate-fade-in {
+  animation: fade-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2.4s ease-in-out infinite;
+}
+
+/* Skeleton shimmer */
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface) 0%,
+    color-mix(in srgb, var(--border) 40%, var(--surface)) 50%,
+    var(--surface) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* Stagger delay helpers for CSS-only lists */
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
+.stagger-5 { animation-delay: 0.20s; }
+.stagger-6 { animation-delay: 0.24s; }
+
+/* Smooth theme color transitions on themeable elements only (prevents performance lag and frame stutter) */
+body, header, nav, footer, input, select, textarea, button, a, .glass-panel, hr, .card, [class*="bg-"], [class*="border-"], [class*="text-"] {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 0.25s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Preserve GPU-only motion — exempt transforms/filters from blanket transitions to keep spring physics smooth */
+*:where([class*="motion"]),
+*:where([data-framer-motion]) {
+  transition-property: none !important;
+}
