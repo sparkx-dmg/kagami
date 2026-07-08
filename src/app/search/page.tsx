@@ -250,7 +250,7 @@ function SearchContent() {
                         <button
                           key={dem}
                           onClick={() => toggleDemographic(dem)}
-                          className={`px-3 py-1.5 border rounded-md uppercase text-[10px] cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
+                          className={`px-4 py-2.5 border rounded-md uppercase text-[10px] cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
                             active
                               ? 'bg-accent/15 text-accent border-accent font-bold'
                               : 'bg-surface/50 text-text-primary border-border-divider/50 hover:bg-surface/85 hover:border-text-muted'
@@ -274,7 +274,7 @@ function SearchContent() {
                         <button
                           key={st}
                           onClick={() => toggleStatus(st)}
-                          className={`px-3 py-1.5 border rounded-md uppercase text-[10px] cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
+                          className={`px-4 py-2.5 border rounded-md uppercase text-[10px] cursor-pointer flex items-center gap-1.5 transition-all duration-200 ${
                             active
                               ? 'bg-accent/15 text-accent border-accent font-bold'
                               : 'bg-surface/50 text-text-primary border-border-divider/50 hover:bg-surface/85 hover:border-text-muted'
@@ -347,7 +347,7 @@ function SearchContent() {
       {!isError && (
         <div>
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 max-[480px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
               {Array.from({ length: 12 }).map((_, idx) => (
                 <MangaCardSkeleton key={idx} />
               ))}
@@ -363,7 +363,7 @@ function SearchContent() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4"
+                className="grid grid-cols-2 max-[480px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4"
               >
                 {data?.items.map((m) => (
                   <motion.div key={m.id} variants={itemVariants}>

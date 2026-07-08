@@ -19,7 +19,7 @@ export function BottomNav() {
 
   return (
     <motion.nav
-      className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-t border-border-divider/40 h-14 flex items-center justify-around z-40 select-none font-mono text-[9px] uppercase tracking-wider"
+      className="flex md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-t border-border-divider/40 h-14 items-center justify-around z-40 select-none font-mono text-[9px] uppercase tracking-wider"
       initial={{ y: 30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 0.05 }}

@@ -271,7 +271,7 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-bg-app flex flex-col items-center justify-center gap-6">
+      <div className="min-h-[100dvh] bg-bg-app flex flex-col items-center justify-center gap-6">
         <Skeleton className="h-4 w-48" />
         <Skeleton className="h-[80vh] w-full max-w-3xl" />
       </div>
@@ -280,7 +280,7 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
 
   if (isError || totalPages === 0) {
     return (
-      <div className="min-h-screen bg-bg-app flex items-center justify-center font-mono">
+      <div className="min-h-[100dvh] bg-bg-app flex items-center justify-center font-mono">
         <div className="max-w-md border border-accent p-8 text-center space-y-4">
           <div className="text-accent text-lg font-bold uppercase">Reader Load Error</div>
           <p className="text-xs text-text-muted">Failed to fetch chapter page URLs. The image server may be offline.</p>
@@ -306,7 +306,7 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
 
       <div
         ref={optionsPanelRef}
-        className={`fixed top-0 right-0 h-full z-[100] w-[300px] max-w-[92vw] bg-bg-app border-l border-border-divider shadow-2xl flex flex-col transition-transform duration-300 ease-out ${showOptions ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed top-0 right-0 h-[100dvh] z-[100] w-[300px] max-w-[92vw] bg-bg-app border-l border-border-divider shadow-2xl flex flex-col transition-transform duration-300 ease-out ${showOptions ? 'translate-x-0' : 'translate-x-full'}`}
         style={{ willChange: 'transform' }}
         aria-hidden={!showOptions}
       >
@@ -463,12 +463,12 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
 
   return (
     <div
-      className="min-h-screen bg-bg-app text-text-primary flex flex-col"
+      className="min-h-[100dvh] bg-bg-app text-text-primary flex flex-col"
       style={{ fontFamily: 'var(--font-mono, monospace)' }}
     >
       <div
         ref={containerRef}
-        className={`relative flex-1 w-full flex flex-col items-center ${isFullscreen ? 'bg-black min-h-screen' : ''}`}
+        className={`relative flex-1 w-full flex flex-col items-center ${isFullscreen ? 'bg-black min-h-[100dvh]' : ''}`}
       >
         <div
           className={`w-full flex items-center justify-between border-b border-border-divider/60 bg-bg-app/95 backdrop-blur-sm px-4 py-3 font-mono text-xs z-30 sticky top-0 transition-all duration-300 ${

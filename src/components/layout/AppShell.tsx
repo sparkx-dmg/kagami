@@ -12,9 +12,9 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   return (
-    <div className="flex min-h-screen bg-bg-app text-text-primary overflow-x-hidden">
+    <div className="flex w-full max-w-full min-h-[100dvh] bg-bg-app text-text-primary overflow-x-hidden">
       <Sidebar />
-      <div className="flex-1 flex flex-col min-h-screen relative pb-14 md:pb-0">
+      <div className="flex-1 flex flex-col min-h-[100dvh] relative pb-14 md:pb-0 w-full max-w-full overflow-x-hidden">
         <Header />
         <main className="flex-1 p-4 md:p-6 lg:p-8 pt-6 md:pt-8 max-w-7xl w-full mx-auto animate-fade-in">
           {children}

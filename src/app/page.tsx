@@ -102,7 +102,7 @@ export default function Home() {
       >
         <h1 className="sr-only">Dashboard</h1>
 
-        <div className="relative overflow-hidden w-full h-[380px] md:h-[440px] rounded-3xl border border-border-divider bg-surface">
+        <div className="relative overflow-hidden w-full min-h-[380px] md:h-[440px] rounded-3xl border border-border-divider bg-surface">
           <AnimatePresence mode="wait">
             {spotlightManga ? (
               <motion.div 
@@ -146,12 +146,12 @@ export default function Home() {
                     {spotlightManga.description || "Enjoy a premium, fast reading experience. Click to explore this spotlight title's details and start reading legal, translated chapters today."}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-3 shrink-0">
-                    <div className="flex gap-2">
-                      <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[11px] uppercase tracking-widest px-6 py-3 rounded-full cursor-pointer select-none whitespace-nowrap">
+                  <div className="flex flex-wrap items-center gap-3 shrink-0 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-3 shrink-0">
+                      <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[11px] uppercase tracking-widest px-6 py-3 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
                         Read Now
                       </Link>
-                      <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[11px] uppercase tracking-widest px-5 py-3 rounded-full cursor-pointer select-none whitespace-nowrap">
+                      <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[11px] uppercase tracking-widest px-5 py-3 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
                         Explore Catalog
                       </Link>
                     </div>
@@ -193,7 +193,7 @@ export default function Home() {
                 </motion.div>
               </motion.div>
             ) : (
-              <div className="h-[380px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
+              <div className="min-h-[380px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
                 Curating spotlight showcase...
               </div>
             )}

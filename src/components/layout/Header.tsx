@@ -31,7 +31,7 @@ export function Header() {
   };
 
   return (
-    <div className="sticky top-0 z-50 w-full flex justify-center pt-4 pb-2 bg-gradient-to-b from-bg-app via-bg-app/95 to-transparent">
+    <div className="sticky top-0 z-50 w-full hidden md:flex justify-center pt-4 pb-2 bg-gradient-to-b from-bg-app via-bg-app/95 to-transparent">
       <div className="max-w-5xl w-[95%] flex items-center justify-between bg-surface/80 backdrop-blur-md border border-border-divider rounded-full px-5 py-2.5 select-none transition-all duration-300">
         <div className="flex items-center pl-2">
           <Link href="/" className="font-sans font-black text-sm tracking-widest text-accent uppercase hover:scale-[1.02] transition-transform duration-200">

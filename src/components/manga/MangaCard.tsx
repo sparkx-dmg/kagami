@@ -133,12 +133,12 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
         <div className="px-1 flex flex-col justify-between flex-1">
           <div className="space-y-1">
             {/* Title */}
-            <h3 className="font-serif font-extrabold text-[13px] leading-snug line-clamp-2 group-hover:text-accent transition-colors tracking-tight text-text-primary">
+            <h3 className="font-serif font-extrabold text-[13px] leading-snug line-clamp-2 break-words group-hover:text-accent transition-colors tracking-tight text-text-primary">
               {manga.title}
             </h3>
 
             {/* Authors */}
-            <p className="text-[10px] font-mono text-text-muted truncate">
+            <p className="text-[10px] font-mono text-text-muted truncate break-words">
               {manga.authors.join(', ')}
             </p>
           </div>
