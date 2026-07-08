@@ -6,9 +6,10 @@ import { AppShell } from '@/components/layout/AppShell';
 import { MangaCard } from '@/components/manga/MangaCard';
 import { MangaCardSkeleton } from '@/components/manga/MangaCardSkeleton';
 import { fetchMangaList } from '@/services/mangadex/mangaCatalogService';
+import { KagamiManga } from '@/types/manga';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useLibraryStore } from '@/stores/libraryStore';
-import { Sparkles, Flame, Clock, Compass, ArrowRight } from 'lucide-react';
+import { Sparkles, Flame, Clock, Compass, ArrowRight, Star, Sword, Heart, Theater } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -66,6 +67,90 @@ export default function Home() {
       }),
   });
 
+  // MangaDex stable tag UUIDs
+  const TAG_ACTION  = '391b0423-d847-456f-aff0-8f0cec6cf629';
+  const TAG_ROMANCE = '423e2eae-a7a2-4a8b-ac03-a8351462d71d';
+  const TAG_DRAMA   = 'b9af3a63-f058-46de-a9a0-e0c13906197a';
+  const TAG_COMEDY  = '4d32cc48-9f00-4cbe-9bc4-9d4daae0b6e8';
+  const TAG_FANTASY = 'cdc58593-87dd-415e-bbc0-2ec27bf404cc';
+  const TAG_SCIFI   = '256c8bd9-4904-4360-bf4f-508a76d67183';
+
+  const { data: topRated, isLoading: loadingTopRated } = useQuery({
+    queryKey: ['manga', 'topRated', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        order: { rating: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: action, isLoading: loadingAction } = useQuery({
+    queryKey: ['manga', 'action', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_ACTION],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: romance, isLoading: loadingRomance } = useQuery({
+    queryKey: ['manga', 'romance', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_ROMANCE],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: drama, isLoading: loadingDrama } = useQuery({
+    queryKey: ['manga', 'drama', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_DRAMA],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: comedy, isLoading: loadingComedy } = useQuery({
+    queryKey: ['manga', 'comedy', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_COMEDY],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: fantasy, isLoading: loadingFantasy } = useQuery({
+    queryKey: ['manga', 'fantasy', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_FANTASY],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
+  const { data: scifi, isLoading: loadingScifi } = useQuery({
+    queryKey: ['manga', 'scifi', sfwMode],
+    queryFn: () =>
+      fetchMangaList({
+        limit: 15,
+        tags: [TAG_SCIFI],
+        order: { followedCount: 'desc' },
+        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
+      }),
+  });
+
   const spotlightItems = useMemo(() => {
     return trending?.items || [];
   }, [trending?.items]);
@@ -89,6 +174,55 @@ export default function Home() {
   };
 
   const isAnyError = errorTrending || errorLatest || errorRecent;
+
+  // Helper to render a horizontal manga row section
+  const MangaRow = ({
+    id,
+    icon,
+    label,
+    href,
+    loading,
+    items,
+    namespace,
+  }: {
+    id: string;
+    icon: React.ReactNode;
+    label: string;
+    href: string;
+    loading: boolean;
+    items?: { id: string }[];
+    namespace: string;
+  }) => (
+    <ViewportContain placeholderHeight="320px">
+      <section className="space-y-3 font-sans">
+        <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
+          <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
+            {icon}
+            <KineticTypography text={label} />
+          </h2>
+          <Link
+            href={href}
+            className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1"
+          >
+            View All <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+        <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
+          {loading
+            ? Array.from({ length: 6 }).map((_, idx) => (
+                <EuclideanWaveItem key={idx} id={`${id}-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
+                  <MangaCardSkeleton />
+                </EuclideanWaveItem>
+              ))
+            : (items as KagamiManga[] | undefined)?.map((m) => (
+                <EuclideanWaveItem key={m.id} id={`${id}-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
+                  <MangaCard manga={m} namespace={namespace} />
+                </EuclideanWaveItem>
+              ))}
+        </div>
+      </section>
+    </ViewportContain>
+  );
 
   return (
     <AppShell>
@@ -282,6 +416,76 @@ export default function Home() {
             </div>
           </section>
         </ViewportContain>
+
+        <MangaRow
+          id="toprated"
+          icon={<Star className="w-3.5 h-3.5 text-yellow-400 shrink-0" />}
+          label="Top Rated"
+          href="/search?sort=rating"
+          loading={loadingTopRated}
+          items={topRated?.items}
+          namespace="toprated"
+        />
+
+        <MangaRow
+          id="action"
+          icon={<Sword className="w-3.5 h-3.5 text-red-400 shrink-0" />}
+          label="Action & Adventure"
+          href="/search?tag=action"
+          loading={loadingAction}
+          items={action?.items}
+          namespace="action"
+        />
+
+        <MangaRow
+          id="romance"
+          icon={<Heart className="w-3.5 h-3.5 text-pink-400 shrink-0" />}
+          label="Romance"
+          href="/search?tag=romance"
+          loading={loadingRomance}
+          items={romance?.items}
+          namespace="romance"
+        />
+
+        <MangaRow
+          id="drama"
+          icon={<Theater className="w-3.5 h-3.5 text-purple-400 shrink-0" />}
+          label="Drama"
+          href="/search?tag=drama"
+          loading={loadingDrama}
+          items={drama?.items}
+          namespace="drama"
+        />
+
+        <MangaRow
+          id="comedy"
+          icon={<Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+          label="Comedy"
+          href="/search?tag=comedy"
+          loading={loadingComedy}
+          items={comedy?.items}
+          namespace="comedy"
+        />
+
+        <MangaRow
+          id="fantasy"
+          icon={<Compass className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+          label="Fantasy"
+          href="/search?tag=fantasy"
+          loading={loadingFantasy}
+          items={fantasy?.items}
+          namespace="fantasy"
+        />
+
+        <MangaRow
+          id="scifi"
+          icon={<Star className="w-3.5 h-3.5 text-cyan-400 shrink-0" />}
+          label="Sci-Fi"
+          href="/search?tag=sci-fi"
+          loading={loadingScifi}
+          items={scifi?.items}
+          namespace="scifi"
+        />
       </motion.div>
       </EuclideanWaveContainer>
     </AppShell>
