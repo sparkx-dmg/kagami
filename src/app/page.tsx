@@ -111,7 +111,7 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 220, damping: 26 }}
-                className="w-full h-full px-4 sm:px-8 md:px-14 py-4 sm:py-8 flex items-center relative overflow-hidden"
+                className="absolute inset-0 px-4 sm:px-8 md:px-14 py-4 sm:py-8 flex items-center overflow-hidden"
               >
                 {spotlightManga.cover && (
                   <>
@@ -148,54 +148,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 font-sans">
-          <EuclideanWaveItem 
-            id="bento-pinned"
-            className="md:col-span-4 bg-surface border border-border-divider rounded-3xl p-4 sm:p-6 flex flex-col justify-between min-h-[140px] md:min-h-[180px] relative overflow-hidden group"
-            whileHover={{ y: -4, borderColor: 'var(--accent-base)' }}
-            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-          >
-            <ZeroGFloating className="flex flex-col justify-between h-full w-full">
-              <ProximityDistortion className="flex flex-col justify-between h-full w-full rounded-3xl">
-                <div className="flex items-center justify-between w-full">
-                  <div>
-                    <div className="text-[8px] sm:text-[9px] text-accent font-black uppercase tracking-wider">My Library Shelf</div>
-                    <h2 className="text-sm md:text-base font-black uppercase tracking-tight text-text-primary">Pinned Collection</h2>
-                  </div>
-                  <div>
-                    <Link href="/library" className="inline-block bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-bold text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-full select-none">
-                      Open Library
-                    </Link>
-                  </div>
-                </div>
-                
-                <div className="my-3">
-                  {Object.keys(items).length > 0 ? (
-                    <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
-                      {Object.values(items).slice(0, 5).map(({ manga }) => (
-                        <Link key={manga.id} href={`/manga/${manga.id}`} className="w-[54px] sm:w-[76px] shrink-0 snap-start group block">
-                          <motion.div 
-                            className="relative aspect-[3/4] rounded-xl overflow-hidden border border-border-divider"
-                            whileHover={{ scale: 1.05 }}
-                          >
-                            {manga.cover ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img src={manga.cover} alt={manga.title} className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-500" />
-                            ) : (
-                              <div className="w-full h-full bg-bg-app flex items-center justify-center text-[8px] text-text-muted font-bold uppercase">No Art</div>
-                            )}
-                          </motion.div>
-                        </Link>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-xs text-text-muted italic">Your library shelf is empty. Pin manga titles from the catalog to see them here.</p>
-                  )}
-                </div>
-              </ProximityDistortion>
-            </ZeroGFloating>
-          </EuclideanWaveItem>
-        </div>
+
 
         {isAnyError && (
           <div className="p-8 border border-accent bg-accent/5 font-sans text-xs text-center rounded-2xl">
