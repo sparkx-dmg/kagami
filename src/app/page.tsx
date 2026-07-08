@@ -136,7 +136,7 @@ export default function Home() {
                   <h2 className="text-base md:text-4xl font-extrabold tracking-tight text-white font-serif leading-tight line-clamp-2 drop-shadow-lg">
                     {spotlightManga.title}
                   </h2>
-                  <p className="hidden md:block text-sm text-white/60 font-sans leading-relaxed line-clamp-2">
+                  <p className="text-[10px] md:text-xs text-white/50 font-sans leading-snug line-clamp-2 max-w-xs md:max-w-sm">
                     {spotlightManga.description || ''}
                   </p>
                   <div className="flex flex-row items-center gap-2 mt-1">
