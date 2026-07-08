@@ -111,86 +111,34 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 220, damping: 26 }}
-                className="w-full h-full px-4 sm:px-8 md:px-14 py-4 sm:py-8 grid md:grid-cols-5 gap-4 md:gap-10 items-center relative overflow-hidden"
+                className="w-full h-full px-4 sm:px-8 md:px-14 py-4 sm:py-8 flex items-center relative overflow-hidden"
               >
                 {spotlightManga.cover && (
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center filter blur-3xl opacity-20 pointer-events-none scale-110"
-                    style={{ 
-                      backgroundImage: `url(${spotlightManga.cover})`,
-                      maskImage: 'linear-gradient(to bottom, black 60%, transparent), linear-gradient(to right, black 50%, transparent)',
-                      WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent), linear-gradient(to right, black 50%, transparent)'
-                    }}
-                  />
+                  <>
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center opacity-30 md:opacity-40 pointer-events-none transition-all duration-500 scale-100"
+                      style={{ 
+                        backgroundImage: `url(${spotlightManga.cover})`,
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-bg-app via-bg-app/80 to-bg-app/20 z-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-bg-app via-bg-app/40 to-transparent z-0" />
+                  </>
                 )}
 
-                <div className="relative z-10 md:col-span-3 flex flex-col justify-center gap-1.5 md:gap-2.5 text-left w-full min-w-0 overflow-hidden">
-                  <div className="text-[8px] sm:text-[10px] text-accent font-black uppercase tracking-widest flex items-center gap-1 shrink-0">
-                    <Sparkles className="w-3 h-3 text-accent animate-pulse" /> Curated Spotlight
-                  </div>
+                <div className="relative z-10 flex flex-col justify-center gap-3 text-left w-full max-w-2xl min-w-0 overflow-hidden">
                   <h2 className="text-sm sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-1 md:line-clamp-2">
                     {spotlightManga.title}
                   </h2>
-                  <p className="text-[8px] sm:text-[10px] text-text-muted font-mono uppercase tracking-widest shrink-0 truncate">
-                    Authored by <span className="text-text-primary font-bold">{spotlightManga.authors.join(', ')}</span>
-                  </p>
-                  <p 
-                    className="hidden md:block text-xs md:text-sm text-text-muted leading-relaxed font-normal max-w-xl font-sans"
-                    style={{
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {spotlightManga.description || "Enjoy a premium, fast reading experience. Click to explore this spotlight title's details and start reading legal, translated chapters today."}
-                  </p>
-
-                  <div className="flex flex-row items-center gap-2 shrink-0 w-full sm:w-auto">
-                    <div className="flex flex-row w-full sm:w-auto gap-2 shrink-0">
-                      <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
-                        Read Now
-                      </Link>
-                      <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
-                        Explore Catalog
-                      </Link>
-                    </div>
-                    {spotlightItems.length > 0 && (
-                      <div className="hidden md:flex items-center gap-2 font-mono text-[9px] text-text-muted tracking-wider select-none">
-                        <span>{String(activeIdx + 1).padStart(2, '0')}</span>
-                        <div className="w-12 h-0.5 bg-border-divider/50 relative rounded-full overflow-hidden">
-                          <div 
-                            className="absolute left-0 top-0 bottom-0 bg-accent transition-all duration-300 rounded-full" 
-                            style={{ width: `${((activeIdx + 1) / spotlightItems.length) * 100}%` }}
-                          />
-                        </div>
-                        <span>{String(spotlightItems.length).padStart(2, '0')}</span>
-                      </div>
-                    )}
+                  <div className="flex flex-row items-center gap-2 shrink-0">
+                    <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-auto">
+                      Read Now
+                    </Link>
+                    <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-auto">
+                      Explore Catalog
+                    </Link>
                   </div>
                 </div>
-
-                <motion.div 
-                  className="relative z-10 md:col-span-2 w-48 md:w-60 aspect-[3/4] bg-border-divider/20 rounded-2xl overflow-hidden cursor-pointer shrink-0 border border-border-divider mx-auto shadow-2xl hidden md:block"
-                  whileHover={{ scale: 1.04, rotate: 0 }}
-                  initial={{ rotate: 2 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                >
-                  <Link href={`/manga/${spotlightManga.id}`} className="relative w-full h-full block">
-                    {!spotlightImageLoaded[spotlightManga.id] && (
-                      <div className="absolute inset-0 shimmer-bg" />
-                    )}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={spotlightManga.cover || ''}
-                      alt={spotlightManga.title}
-                      onLoad={() => setSpotlightImageLoaded(prev => ({ ...prev, [spotlightManga.id]: true }))}
-                      className={`w-full h-full object-cover transition-opacity duration-300 ${
-                        spotlightImageLoaded[spotlightManga.id] ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    />
-                  </Link>
-                </motion.div>
               </motion.div>
             ) : (
               <div className="min-h-[135px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
