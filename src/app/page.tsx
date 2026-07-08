@@ -11,12 +11,60 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useLibraryStore } from '@/stores/libraryStore';
 import { Sparkles, Flame, Clock, Compass, ArrowRight, Star, Sword, Heart, Theater } from 'lucide-react';
 import Link from 'next/link';
-import { cn } from '@/utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ViewportContain } from '@/components/ui/ViewportContain';
-import { pageVariants, staggerContainer, scaleInItem, fadeUpItem } from '@/utils/animations';
+import { pageVariants } from '@/utils/animations';
 import { EuclideanWaveContainer, EuclideanWaveItem } from '@/components/ui/EuclideanWave';
-import { ZeroGFloating, KineticTypography, ProximityDistortion } from '@/components/ui/KineticCore';
+import { KineticTypography } from '@/components/ui/KineticCore';
+
+// ─── MangaRow: defined outside Home so React never remounts it ───────────────
+function MangaRow({
+  id, icon, label, href, loading, isError, items, namespace,
+}: {
+  id: string;
+  icon: React.ReactNode;
+  label: string;
+  href: string;
+  loading: boolean;
+  isError: boolean;
+  items?: KagamiManga[];
+  namespace: string;
+}) {
+  // Silently hide sections that errored — no crash, no banner
+  if (isError && !loading && !items?.length) return null;
+  return (
+    <ViewportContain placeholderHeight="320px">
+      <section className="space-y-3 font-sans">
+        <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
+          <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
+            {icon}
+            <KineticTypography text={label} />
+          </h2>
+          <Link
+            href={href}
+            className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1"
+          >
+            View All <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+        <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
+          {loading
+            ? Array.from({ length: 6 }).map((_, idx) => (
+                <EuclideanWaveItem key={idx} id={`${id}-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
+                  <MangaCardSkeleton />
+                </EuclideanWaveItem>
+              ))
+            : items?.map((m) => (
+                <EuclideanWaveItem key={m.id} id={`${id}-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
+                  <MangaCard manga={m} namespace={namespace} />
+                </EuclideanWaveItem>
+              ))}
+        </div>
+      </section>
+    </ViewportContain>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   const sfwMode = useSettingsStore((state) => state.settings.sfwMode);
@@ -67,20 +115,21 @@ export default function Home() {
       }),
   });
 
-  // Wave gates: category sections load only after above-fold content is ready
-  const primaryDone = !loadingTrending && !loadingLatest && !loadingRecent;
+  // Wave gates: only start category fetches after at least ONE primary query succeeds.
+  // Using !! data checks (not just !loading) prevents waves firing on error-state.
+  const primaryHasData = !!(trending?.items.length || latest?.items.length || recent?.items.length);
   const [wave2Ready, setWave2Ready] = useState(false);
   const [wave3Ready, setWave3Ready] = useState(false);
 
   useEffect(() => {
-    if (!primaryDone) return;
-    const t = setTimeout(() => setWave2Ready(true), 300);
+    if (!primaryHasData) return;
+    const t = setTimeout(() => setWave2Ready(true), 400);
     return () => clearTimeout(t);
-  }, [primaryDone]);
+  }, [primaryHasData]);
 
   useEffect(() => {
     if (!wave2Ready) return;
-    const t = setTimeout(() => setWave3Ready(true), 600);
+    const t = setTimeout(() => setWave3Ready(true), 800);
     return () => clearTimeout(t);
   }, [wave2Ready]);
 
@@ -93,45 +142,45 @@ export default function Home() {
   const TAG_SCIFI   = '256c8bd9-4904-4360-bf4f-508a76d67183';
   const contentRating = sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'];
 
-  // Wave 2 — fires 300ms after primary content loads
-  const { data: topRated, isLoading: loadingTopRated } = useQuery({
+  // Wave 2 — fires 400ms after at least one primary succeeds
+  const { data: topRated, isLoading: loadingTopRated, isError: errorTopRated } = useQuery({
     queryKey: ['manga', 'topRated', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, order: { rating: 'desc' }, contentRating }),
     enabled: wave2Ready,
   });
 
-  const { data: action, isLoading: loadingAction } = useQuery({
+  const { data: action, isLoading: loadingAction, isError: errorAction } = useQuery({
     queryKey: ['manga', 'action', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_ACTION], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave2Ready,
   });
 
-  const { data: romance, isLoading: loadingRomance } = useQuery({
+  const { data: romance, isLoading: loadingRomance, isError: errorRomance } = useQuery({
     queryKey: ['manga', 'romance', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_ROMANCE], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave2Ready,
   });
 
-  // Wave 3 — fires 900ms after primary content loads
-  const { data: drama, isLoading: loadingDrama } = useQuery({
+  // Wave 3 — fires 1.2s after at least one primary succeeds
+  const { data: drama, isLoading: loadingDrama, isError: errorDrama } = useQuery({
     queryKey: ['manga', 'drama', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_DRAMA], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave3Ready,
   });
 
-  const { data: comedy, isLoading: loadingComedy } = useQuery({
+  const { data: comedy, isLoading: loadingComedy, isError: errorComedy } = useQuery({
     queryKey: ['manga', 'comedy', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_COMEDY], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave3Ready,
   });
 
-  const { data: fantasy, isLoading: loadingFantasy } = useQuery({
+  const { data: fantasy, isLoading: loadingFantasy, isError: errorFantasy } = useQuery({
     queryKey: ['manga', 'fantasy', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_FANTASY], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave3Ready,
   });
 
-  const { data: scifi, isLoading: loadingScifi } = useQuery({
+  const { data: scifi, isLoading: loadingScifi, isError: errorScifi } = useQuery({
     queryKey: ['manga', 'scifi', sfwMode],
     queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_SCIFI], order: { followedCount: 'desc' }, contentRating }),
     enabled: wave3Ready,
@@ -161,54 +210,6 @@ export default function Home() {
 
   const isAnyError = errorTrending || errorLatest || errorRecent;
 
-  // Helper to render a horizontal manga row section
-  const MangaRow = ({
-    id,
-    icon,
-    label,
-    href,
-    loading,
-    items,
-    namespace,
-  }: {
-    id: string;
-    icon: React.ReactNode;
-    label: string;
-    href: string;
-    loading: boolean;
-    items?: { id: string }[];
-    namespace: string;
-  }) => (
-    <ViewportContain placeholderHeight="320px">
-      <section className="space-y-3 font-sans">
-        <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
-          <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
-            {icon}
-            <KineticTypography text={label} />
-          </h2>
-          <Link
-            href={href}
-            className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1"
-          >
-            View All <ArrowRight className="w-3 h-3" />
-          </Link>
-        </div>
-        <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
-          {loading
-            ? Array.from({ length: 6 }).map((_, idx) => (
-                <EuclideanWaveItem key={idx} id={`${id}-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
-                  <MangaCardSkeleton />
-                </EuclideanWaveItem>
-              ))
-            : (items as KagamiManga[] | undefined)?.map((m) => (
-                <EuclideanWaveItem key={m.id} id={`${id}-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
-                  <MangaCard manga={m} namespace={namespace} />
-                </EuclideanWaveItem>
-              ))}
-        </div>
-      </section>
-    </ViewportContain>
-  );
 
   return (
     <AppShell>
@@ -409,6 +410,7 @@ export default function Home() {
           label="Top Rated"
           href="/search?sort=rating"
           loading={loadingTopRated}
+          isError={errorTopRated}
           items={topRated?.items}
           namespace="toprated"
         />
@@ -419,6 +421,7 @@ export default function Home() {
           label="Action & Adventure"
           href="/search?tag=action"
           loading={loadingAction}
+          isError={errorAction}
           items={action?.items}
           namespace="action"
         />
@@ -429,6 +432,7 @@ export default function Home() {
           label="Romance"
           href="/search?tag=romance"
           loading={loadingRomance}
+          isError={errorRomance}
           items={romance?.items}
           namespace="romance"
         />
@@ -439,6 +443,7 @@ export default function Home() {
           label="Drama"
           href="/search?tag=drama"
           loading={loadingDrama}
+          isError={errorDrama}
           items={drama?.items}
           namespace="drama"
         />
@@ -449,6 +454,7 @@ export default function Home() {
           label="Comedy"
           href="/search?tag=comedy"
           loading={loadingComedy}
+          isError={errorComedy}
           items={comedy?.items}
           namespace="comedy"
         />
@@ -459,6 +465,7 @@ export default function Home() {
           label="Fantasy"
           href="/search?tag=fantasy"
           loading={loadingFantasy}
+          isError={errorFantasy}
           items={fantasy?.items}
           namespace="fantasy"
         />
@@ -469,6 +476,7 @@ export default function Home() {
           label="Sci-Fi"
           href="/search?tag=sci-fi"
           loading={loadingScifi}
+          isError={errorScifi}
           items={scifi?.items}
           namespace="scifi"
         />

@@ -2,6 +2,41 @@ const MANGADEX_BASE_SERVER = 'https://api.mangadex.org';
 const MANGADEX_BASE_CLIENT = '/api/mangadex';
 const USER_AGENT = 'KagamiMangaReader/1.0.0 (contact@kagami.ink)';
 
+// ─── Concurrency queue ──────────────────────────────────────────────────────
+// Caps simultaneous in-flight requests to 3 so we never saturate MangaDex.
+const MAX_CONCURRENT = 3;
+let activeRequests = 0;
+const requestQueue: Array<() => void> = [];
+
+function processQueue() {
+  while (activeRequests < MAX_CONCURRENT && requestQueue.length > 0) {
+    const next = requestQueue.shift()!;
+    activeRequests++;
+    next();
+  }
+}
+
+function enqueue<T>(fn: () => Promise<T>): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const run = () => {
+      fn()
+        .then(resolve)
+        .catch(reject)
+        .finally(() => {
+          activeRequests--;
+          processQueue();
+        });
+    };
+    if (activeRequests < MAX_CONCURRENT) {
+      activeRequests++;
+      run();
+    } else {
+      requestQueue.push(run);
+    }
+  });
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 export class MangaDexApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -11,7 +46,7 @@ export class MangaDexApiError extends Error {
   }
 }
 
-export async function mangadexFetch<T>(path: string, options?: RequestInit): Promise<T> {
+async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const isServer = typeof window === 'undefined';
   const baseUrl = isServer ? MANGADEX_BASE_SERVER : MANGADEX_BASE_CLIENT;
   const targetUrl = `${baseUrl}/${path.replace(/^\//, '')}`;
@@ -22,23 +57,26 @@ export async function mangadexFetch<T>(path: string, options?: RequestInit): Pro
   }
   headers.set('Accept', 'application/json');
 
-  try {
-    const response = await fetch(targetUrl, {
-      ...options,
-      headers,
-    });
+  const response = await fetch(targetUrl, { ...options, headers });
 
-    if (!response.ok) {
-      let errorMessage = `HTTP error! status: ${response.status}`;
-      try {
-        const errorData = await response.json();
-        const detail = errorData?.errors?.[0]?.detail || errorData?.message;
-        if (detail) errorMessage = detail;
-      } catch {}
-      throw new MangaDexApiError(errorMessage, response.status);
+  if (!response.ok) {
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    try {
+      const errorData = await response.json();
+      const detail = errorData?.errors?.[0]?.detail || errorData?.message;
+      if (detail) errorMessage = detail;
+    } catch {
+      // ignore JSON parse errors
     }
+    throw new MangaDexApiError(errorMessage, response.status);
+  }
 
-    return (await response.json()) as T;
+  return (await response.json()) as T;
+}
+
+export async function mangadexFetch<T>(path: string, options?: RequestInit): Promise<T> {
+  try {
+    return await enqueue(() => doFetch<T>(path, options));
   } catch (error) {
     if (error instanceof MangaDexApiError) throw error;
     throw new Error(error instanceof Error ? error.message : 'Network error occurred');
