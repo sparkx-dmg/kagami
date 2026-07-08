@@ -57,6 +57,16 @@ async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const cleanPath = path.replace(/^\//, '');
   const targetUrl = `${baseUrl}/${cleanPath}`;
 
+  if (typeof window !== 'undefined') {
+    console.log('[Kagami Client Fetch]', {
+      path,
+      isServer,
+      windowType: typeof window,
+      baseUrl,
+      targetUrl
+    });
+  }
+
   const headers = new Headers(options?.headers);
   if (isServer) {
     headers.set('User-Agent', USER_AGENT);
