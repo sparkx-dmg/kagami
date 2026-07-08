@@ -1,10 +1,12 @@
-const MANGADEX_BASE_SERVER = 'https://api.mangadex.org';
-const MANGADEX_BASE_CLIENT = '/api/mangadex';
+// MangaDex allows CORS from browsers, so we call it directly from the client.
+// The proxy (/api/mangadex) is kept only for server-side rendering context.
+const MANGADEX_DIRECT = 'https://api.mangadex.org';
+const MANGADEX_PROXY  = '/api/mangadex';
 const USER_AGENT = 'KagamiMangaReader/1.0.0 (contact@kagami.ink)';
 
-// ─── Concurrency queue ──────────────────────────────────────────────────────
-// Caps simultaneous in-flight requests to 3 so we never saturate MangaDex.
-const MAX_CONCURRENT = 3;
+// ─── Concurrency queue ───────────────────────────────────────────────────────
+// Caps simultaneous in-flight requests to 4 so we never saturate MangaDex.
+const MAX_CONCURRENT = 4;
 let activeRequests = 0;
 const requestQueue: Array<() => void> = [];
 
@@ -35,7 +37,7 @@ function enqueue<T>(fn: () => Promise<T>): Promise<T> {
     }
   });
 }
-// ────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 
 export class MangaDexApiError extends Error {
   status: number;
@@ -48,8 +50,12 @@ export class MangaDexApiError extends Error {
 
 async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const isServer = typeof window === 'undefined';
-  const baseUrl = isServer ? MANGADEX_BASE_SERVER : MANGADEX_BASE_CLIENT;
-  const targetUrl = `${baseUrl}/${path.replace(/^\//, '')}`;
+
+  // Browser → direct to MangaDex (CORS allowed, no proxy DNS issues)
+  // Server  → use proxy path with full URL (for SSR/RSC if ever needed)
+  const baseUrl = isServer ? MANGADEX_PROXY : MANGADEX_DIRECT;
+  const cleanPath = path.replace(/^\//, '');
+  const targetUrl = `${baseUrl}/${cleanPath}`;
 
   const headers = new Headers(options?.headers);
   if (isServer) {
@@ -57,7 +63,12 @@ async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
   }
   headers.set('Accept', 'application/json');
 
-  const response = await fetch(targetUrl, { ...options, headers });
+  const response = await fetch(targetUrl, {
+    ...options,
+    headers,
+    // On the browser side, tell the CDN to cache for 5 minutes
+    ...(isServer ? {} : { cache: 'default' }),
+  });
 
   if (!response.ok) {
     let errorMessage = `HTTP error! status: ${response.status}`;
@@ -66,7 +77,7 @@ async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
       const detail = errorData?.errors?.[0]?.detail || errorData?.message;
       if (detail) errorMessage = detail;
     } catch {
-      // ignore JSON parse errors
+      // ignore JSON parse errors on error bodies
     }
     throw new MangaDexApiError(errorMessage, response.status);
   }
