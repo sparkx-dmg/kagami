@@ -98,11 +98,11 @@ export default function Home() {
         variants={pageVariants}
         initial="hidden"
         animate="show"
-        className="space-y-16 pb-20 select-none"
+        className="space-y-6 md:space-y-16 pb-24 md:pb-20 select-none"
       >
         <h1 className="sr-only">Dashboard</h1>
 
-        <div className="relative overflow-hidden w-full min-h-[135px] md:h-[440px] rounded-3xl border border-border-divider bg-surface">
+        <div className="relative overflow-hidden w-full h-[180px] md:h-[440px] rounded-2xl md:rounded-3xl border border-border-divider bg-surface">
           <AnimatePresence mode="wait">
             {spotlightManga ? (
               <motion.div 
@@ -116,7 +116,7 @@ export default function Home() {
                 {spotlightManga.cover && (
                   <>
                     <div 
-                      className="absolute inset-0 bg-cover bg-center opacity-30 md:opacity-40 pointer-events-none transition-all duration-500 scale-100"
+                      className="absolute inset-0 bg-cover bg-top opacity-35 md:opacity-40 pointer-events-none transition-all duration-700"
                       style={{ 
                         backgroundImage: `url(${spotlightManga.cover})`,
                       }}
@@ -126,22 +126,25 @@ export default function Home() {
                   </>
                 )}
 
-                <div className="relative z-10 flex flex-col justify-center gap-3 text-left w-full max-w-2xl min-w-0 overflow-hidden">
-                  <h2 className="text-sm sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-1 md:line-clamp-2">
+                <div className="relative z-10 flex flex-col justify-end gap-2 text-left w-full min-w-0 overflow-hidden h-full pb-1">
+                  <p className="text-[8px] text-accent/80 font-black uppercase tracking-[0.15em] flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5" /> Curated Spotlight
+                  </p>
+                  <h2 className="text-sm sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-2 md:line-clamp-2">
                     {spotlightManga.title}
                   </h2>
                   <div className="flex flex-row items-center gap-2 shrink-0">
-                    <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-auto">
+                    <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center">
                       Read Now
                     </Link>
-                    <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-auto">
-                      Explore Catalog
+                    <Link href="/search" className="border border-border-divider/60 text-text-primary/80 hover:text-text-primary hover:bg-bg-app/50 transition-colors font-sans font-bold text-[9px] sm:text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center">
+                      Explore
                     </Link>
                   </div>
                 </div>
               </motion.div>
             ) : (
-              <div className="min-h-[135px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
+              <div className="h-[180px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
                 Curating spotlight showcase...
               </div>
             )}
@@ -163,18 +166,18 @@ export default function Home() {
         )}
 
         <ViewportContain placeholderHeight="320px">
-          <section className="space-y-6 font-sans">
-            <div className="flex items-center justify-between border-b border-border-divider/60 pb-2">
-              <h2 className="text-xs font-bold uppercase flex items-center gap-2 tracking-widest text-text-primary">
-                <Flame className="w-4 h-4 text-accent animate-pulse shrink-0" />
-                <KineticTypography text="Trending Titles" />
+          <section className="space-y-3 font-sans">
+            <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
+              <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
+                <Flame className="w-3.5 h-3.5 text-accent animate-pulse shrink-0" />
+                <KineticTypography text="Trending" />
               </h2>
-              <Link href="/search?sort=followedCount" className="text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
+              <Link href="/search?sort=followedCount" className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
                 View All <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
+            <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
               {loadingTrending ? (
                 Array.from({ length: 6 }).map((_, idx) => (
                   <EuclideanWaveItem key={idx} id={`trending-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
@@ -193,18 +196,18 @@ export default function Home() {
         </ViewportContain>
 
         <ViewportContain placeholderHeight="320px">
-          <section className="space-y-6 font-sans">
-            <div className="flex items-center justify-between border-b border-border-divider/60 pb-2">
-              <h2 className="text-xs font-bold uppercase flex items-center gap-2 tracking-widest text-text-primary">
-                <Clock className="w-4 h-4 text-accent shrink-0" />
-                <KineticTypography text="Latest Updates" />
+          <section className="space-y-3 font-sans">
+            <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
+              <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
+                <Clock className="w-3.5 h-3.5 text-accent shrink-0" />
+                <KineticTypography text="Latest" />
               </h2>
-              <Link href="/search?sort=latestUploadedChapter" className="text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
+              <Link href="/search?sort=latestUploadedChapter" className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
                 View All <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
+            <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
               {loadingLatest ? (
                 Array.from({ length: 6 }).map((_, idx) => (
                   <EuclideanWaveItem key={idx} id={`latest-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
@@ -223,18 +226,18 @@ export default function Home() {
         </ViewportContain>
 
         <ViewportContain placeholderHeight="320px">
-          <section className="space-y-6 font-sans">
-            <div className="flex items-center justify-between border-b border-border-divider/60 pb-2">
-              <h2 className="text-xs font-bold uppercase flex items-center gap-2 tracking-widest text-text-primary">
-                <Compass className="w-4 h-4 text-accent shrink-0" />
-                <KineticTypography text="Recently Added" />
+          <section className="space-y-3 font-sans">
+            <div className="flex items-center justify-between border-b border-border-divider/40 pb-2">
+              <h2 className="text-[10px] md:text-xs font-bold uppercase flex items-center gap-1.5 tracking-widest text-text-primary">
+                <Compass className="w-3.5 h-3.5 text-accent shrink-0" />
+                <KineticTypography text="New Arrivals" />
               </h2>
-              <Link href="/search?sort=createdAt" className="text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
+              <Link href="/search?sort=createdAt" className="text-[8px] md:text-[9px] font-bold uppercase tracking-wider text-text-muted hover:text-accent transition-colors flex items-center gap-1">
                 View All <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
 
-            <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
+            <div className="flex gap-2 md:gap-6 overflow-x-auto pb-2 scrollbar-none snap-x scroll-smooth">
               {loadingRecent ? (
                 Array.from({ length: 6 }).map((_, idx) => (
                   <EuclideanWaveItem key={idx} id={`recent-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">

@@ -65,10 +65,10 @@ describe('Dashboard Homepage', () => {
     expect(headerTitle).toBeInTheDocument();
 
     // Verify sections are visible
-    const trendingSection = screen.getByRole('heading', { name: /trending titles/i });
+    const trendingSection = screen.getByRole('heading', { name: /trending/i });
     expect(trendingSection).toBeInTheDocument();
 
-    const latestSection = screen.getByRole('heading', { name: /latest updates/i });
+    const latestSection = screen.getByRole('heading', { name: /latest/i });
     expect(latestSection).toBeInTheDocument();
   });
 });

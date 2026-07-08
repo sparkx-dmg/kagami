@@ -56,7 +56,7 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
       className="group block focus:outline-none font-sans"
     >
       <ZeroGFloating className="h-full">
-        <div className="flex flex-col h-full space-y-3">
+        <div className="flex flex-col h-full space-y-1.5">
         {/* Cover Image Container with Magnetism & 3D tilt */}
         <div 
           ref={coverRef}
@@ -131,9 +131,9 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
 
         {/* Info Content - stacked cleanly underneath cover */}
         <div className="px-1 flex flex-col justify-between flex-1">
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {/* Title */}
-            <h3 className="font-serif font-extrabold text-[10px] sm:text-xs md:text-[13px] leading-snug break-words group-hover:text-accent transition-colors tracking-tight text-text-primary">
+            <h3 className="font-serif font-extrabold text-[10px] sm:text-xs md:text-[13px] leading-tight line-clamp-2 break-words group-hover:text-accent transition-colors tracking-tight text-text-primary">
               {manga.title}
             </h3>
 
