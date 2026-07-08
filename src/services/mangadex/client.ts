@@ -51,9 +51,9 @@ export class MangaDexApiError extends Error {
 async function doFetch<T>(path: string, options?: RequestInit): Promise<T> {
   const isServer = typeof window === 'undefined';
 
-  // Browser → direct to MangaDex (CORS allowed, no proxy DNS issues)
-  // Server  → use proxy path with full URL (for SSR/RSC if ever needed)
-  const baseUrl = isServer ? MANGADEX_PROXY : MANGADEX_DIRECT;
+  // Server  → direct to MangaDex (since server DNS is overridden and fixed in Node)
+  // Browser → use proxy path (relative path to bypass browser-side DNS issues)
+  const baseUrl = isServer ? MANGADEX_DIRECT : MANGADEX_PROXY;
   const cleanPath = path.replace(/^\//, '');
   const targetUrl = `${baseUrl}/${cleanPath}`;
 

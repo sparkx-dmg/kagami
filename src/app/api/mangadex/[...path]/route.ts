@@ -1,4 +1,36 @@
 import { NextRequest, NextResponse } from 'next/server';
+import dns from 'node:dns';
+
+// Fix server's broken system DNS resolver (10.181.115.47 timeouts)
+// by intercepting Node's lookup for api.mangadex.org and using Google/Cloudflare DNS
+const dnsResolver = new dns.Resolver();
+dnsResolver.setServers(['8.8.8.8', '1.1.1.1']);
+
+const originalLookup = dns.lookup;
+dns.lookup = function (hostname: string, options: any, callback: any) {
+  if (typeof options === 'function') {
+    callback = options;
+    options = {};
+  }
+  const opts = options || {};
+
+  if (hostname === 'api.mangadex.org') {
+    dnsResolver.resolve4(hostname, (err, addresses) => {
+      if (err || !addresses || addresses.length === 0) {
+        originalLookup(hostname, options, callback);
+      } else {
+        if (opts.all) {
+          const results = addresses.map((addr) => ({ address: addr, family: 4 }));
+          callback(null, results);
+        } else {
+          callback(null, addresses[0], 4);
+        }
+      }
+    });
+    return;
+  }
+  return originalLookup(hostname, options, callback);
+} as any;
 
 const MANGADEX_API_BASE = 'https://api.mangadex.org';
 const USER_AGENT = 'KagamiMangaReader/1.0.0 (contact@kagami.ink)';
