@@ -1,32 +1,30 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
+
+// No framer-motion on list items — CSS transitions are GPU-composited
+// and don't block the main thread the way JS spring animations do.
 
 export function EuclideanWaveContainer({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-interface EuclideanWaveItemProps extends React.ComponentPropsWithoutRef<typeof motion.div> {
+interface EuclideanWaveItemProps {
   children: React.ReactNode;
   id: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-export function EuclideanWaveItem({ children, className, style, ...restProps }: EuclideanWaveItemProps) {
+export function EuclideanWaveItem({ children, className, style, id }: EuclideanWaveItemProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{
-        type: 'spring',
-        stiffness: 300,
-        damping: 24,
-      }}
+    <div
       className={className}
-      style={{ willChange: 'transform, opacity', ...style }}
-      {...restProps}
+      style={style}
+      // Simple CSS fade-in via Tailwind animate-fade-in (defined in globals.css)
+      // No JS animation loop — zero main-thread cost
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

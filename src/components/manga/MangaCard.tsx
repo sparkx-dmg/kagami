@@ -38,6 +38,7 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
     
     coverRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateX(${translateX}px) translateY(${translateY}px) scale(1.03)`;
     coverRef.current.style.transition = 'transform 0.05s ease-out, border-color 0.3s ease-out';
+    coverRef.current.style.willChange = 'transform';
   };
 
   const handleMouseLeave = () => {
@@ -45,6 +46,7 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
     if (!coverRef.current) return;
     coverRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateX(0px) translateY(0px) scale(1)';
     coverRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s ease-out';
+    coverRef.current.style.willChange = 'auto';
   };
 
   return (
@@ -61,7 +63,7 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
         <div 
           ref={coverRef}
           className="relative aspect-[3/4] w-full bg-surface overflow-hidden border border-border-divider rounded-xl transition-all duration-300 group-hover:border-accent"
-          style={{ willChange: 'transform' }}
+          style={{ willChange: 'auto' }}
         >
           {manga.cover ? (
             <ViewTransition name={namespace ? `cover-${namespace}-${manga.id}` : `cover-${manga.id}`}>
@@ -74,10 +76,11 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
                   src={manga.cover}
                   alt={manga.title}
                   onLoad={() => setImageLoaded(true)}
-                  className={`object-cover w-full h-full transition-all duration-300 group-hover:scale-103 group-focus-visible:scale-103 ${
-                    imageLoaded ? "opacity-100" : "opacity-0"
+                  className={`object-cover w-full h-full transition-opacity duration-300 group-hover:scale-103 group-focus-visible:scale-103 ${
+                    imageLoaded ? 'opacity-100' : 'opacity-0'
                   }`}
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </ViewTransition>

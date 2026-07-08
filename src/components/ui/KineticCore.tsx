@@ -18,7 +18,7 @@ export function ZeroGFloating({ children, className }: ZeroGFloatingProps) {
   );
 }
 
-// ─── Module 2: Snappy Kinetic Typography (Subtle Block Fade-In) ─────────────────
+// ─── Module 2: Snappy Kinetic Typography (Pure CSS Fade) ────────────────────
 interface KineticTypographyProps {
   text: string;
   className?: string;
@@ -27,20 +27,12 @@ interface KineticTypographyProps {
 
 export function KineticTypography({ text, className, delay = 0 }: KineticTypographyProps) {
   return (
-    <motion.span
-      className={`inline-block ${className}`}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        type: 'spring',
-        stiffness: 280,
-        damping: 22,
-        delay: delay,
-      }}
-      style={{ willChange: 'transform, opacity' }}
+    <span
+      className={`inline-block animate-fade-in ${className ?? ''}`}
+      style={{ animationDelay: delay ? `${delay}s` : undefined }}
     >
       {text}
-    </motion.span>
+    </span>
   );
 }
 
