@@ -102,7 +102,7 @@ export default function Home() {
       >
         <h1 className="sr-only">Dashboard</h1>
 
-        <div className="relative overflow-hidden w-full min-h-[260px] md:h-[440px] rounded-3xl border border-border-divider bg-surface">
+        <div className="relative overflow-hidden w-full min-h-[135px] md:h-[440px] rounded-3xl border border-border-divider bg-surface">
           <AnimatePresence mode="wait">
             {spotlightManga ? (
               <motion.div 
@@ -111,7 +111,7 @@ export default function Home() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 220, damping: 26 }}
-                className="w-full h-full px-4 sm:px-8 md:px-14 py-5 sm:py-8 grid md:grid-cols-5 gap-4 md:gap-10 items-center relative overflow-hidden"
+                className="w-full h-full px-4 sm:px-8 md:px-14 py-4 sm:py-8 grid md:grid-cols-5 gap-4 md:gap-10 items-center relative overflow-hidden"
               >
                 {spotlightManga.cover && (
                   <div 
@@ -124,18 +124,18 @@ export default function Home() {
                   />
                 )}
 
-                <div className="relative z-10 md:col-span-3 flex flex-col justify-center gap-2 text-left w-full min-w-0 overflow-hidden">
-                  <div className="text-[9px] sm:text-[10px] text-accent font-black uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                <div className="relative z-10 md:col-span-3 flex flex-col justify-center gap-1.5 md:gap-2.5 text-left w-full min-w-0 overflow-hidden">
+                  <div className="text-[8px] sm:text-[10px] text-accent font-black uppercase tracking-widest flex items-center gap-1 shrink-0">
                     <Sparkles className="w-3 h-3 text-accent animate-pulse" /> Curated Spotlight
                   </div>
-                  <h2 className="text-lg sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-2">
+                  <h2 className="text-sm sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-1 md:line-clamp-2">
                     {spotlightManga.title}
                   </h2>
-                  <p className="text-[9px] sm:text-[10px] text-text-muted font-mono uppercase tracking-widest shrink-0 truncate">
+                  <p className="text-[8px] sm:text-[10px] text-text-muted font-mono uppercase tracking-widest shrink-0 truncate">
                     Authored by <span className="text-text-primary font-bold">{spotlightManga.authors.join(', ')}</span>
                   </p>
                   <p 
-                    className="text-[10px] sm:text-xs md:text-sm text-text-muted leading-relaxed font-normal max-w-xl font-sans"
+                    className="hidden md:block text-xs md:text-sm text-text-muted leading-relaxed font-normal max-w-xl font-sans"
                     style={{
                       display: '-webkit-box',
                       WebkitLineClamp: 2,
@@ -146,17 +146,17 @@ export default function Home() {
                     {spotlightManga.description || "Enjoy a premium, fast reading experience. Click to explore this spotlight title's details and start reading legal, translated chapters today."}
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
-                    <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2 shrink-0">
-                      <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
+                  <div className="flex flex-row items-center gap-2 shrink-0 w-full sm:w-auto">
+                    <div className="flex flex-row w-full sm:w-auto gap-2 shrink-0">
+                      <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
                         Read Now
                       </Link>
-                      <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[10px] uppercase tracking-widest px-4 py-2 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
+                      <Link href="/search" className="border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center w-full sm:w-auto">
                         Explore Catalog
                       </Link>
                     </div>
                     {spotlightItems.length > 0 && (
-                      <div className="flex items-center gap-2 font-mono text-[9px] text-text-muted tracking-wider select-none">
+                      <div className="hidden md:flex items-center gap-2 font-mono text-[9px] text-text-muted tracking-wider select-none">
                         <span>{String(activeIdx + 1).padStart(2, '0')}</span>
                         <div className="w-12 h-0.5 bg-border-divider/50 relative rounded-full overflow-hidden">
                           <div 
@@ -193,47 +193,39 @@ export default function Home() {
                 </motion.div>
               </motion.div>
             ) : (
-              <div className="min-h-[380px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
+              <div className="min-h-[135px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
                 Curating spotlight showcase...
               </div>
             )}
           </AnimatePresence>
         </div>
 
-        {isAnyError && (
-          <div className="p-8 border border-accent bg-accent/5 font-sans text-xs text-center rounded-2xl">
-            <p className="text-text-primary mb-3 uppercase font-bold">Failed to load content from MangaDex</p>
-            <p className="text-text-muted mb-4 max-w-md mx-auto leading-relaxed">
-              This might be due to rate limiting or connection problems. Please check your internet connection.
-            </p>
-            <button onClick={handleRetryAll} className="border border-border-divider text-text-primary hover:bg-surface px-5 py-2 rounded-full cursor-pointer select-none font-bold uppercase tracking-wider text-[10px]">
-              Retry Connection
-            </button>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-sans">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 font-sans">
           <EuclideanWaveItem 
             id="bento-pinned"
-            className="md:col-span-2 bg-surface border border-border-divider rounded-3xl p-4 sm:p-8 flex flex-col justify-between min-h-[250px] md:min-h-[340px] relative overflow-hidden group"
+            className="md:col-span-4 bg-surface border border-border-divider rounded-3xl p-4 sm:p-6 flex flex-col justify-between min-h-[140px] md:min-h-[180px] relative overflow-hidden group"
             whileHover={{ y: -4, borderColor: 'var(--accent-base)' }}
             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
           >
             <ZeroGFloating className="flex flex-col justify-between h-full w-full">
               <ProximityDistortion className="flex flex-col justify-between h-full w-full rounded-3xl">
-                <div>
-                  <div className="text-[10px] text-accent font-black uppercase tracking-wider mb-2">My Library Shelf</div>
-                  <h2 className="text-base md:text-xl font-black uppercase tracking-tight text-text-primary">
-                    <KineticTypography text="Pinned Collection" />
-                  </h2>
-                  <p className="text-xs text-text-muted mt-1 leading-relaxed">Your saved titles and offline downloads for quick access.</p>
+                <div className="flex items-center justify-between w-full">
+                  <div>
+                    <div className="text-[8px] sm:text-[9px] text-accent font-black uppercase tracking-wider">My Library Shelf</div>
+                    <h2 className="text-sm md:text-base font-black uppercase tracking-tight text-text-primary">Pinned Collection</h2>
+                  </div>
+                  <div>
+                    <Link href="/library" className="inline-block bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-bold text-[9px] uppercase tracking-widest px-3 py-1.5 rounded-full select-none">
+                      Open Library
+                    </Link>
+                  </div>
                 </div>
                 
-                <div className="my-4">
+                <div className="my-3">
                   {Object.keys(items).length > 0 ? (
                     <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x">
-                      {Object.values(items).slice(0, 4).map(({ manga }) => (
-                        <Link key={manga.id} href={`/manga/${manga.id}`} className="w-[70px] sm:w-[80px] shrink-0 snap-start group block">
+                      {Object.values(items).slice(0, 5).map(({ manga }) => (
+                        <Link key={manga.id} href={`/manga/${manga.id}`} className="w-[54px] sm:w-[76px] shrink-0 snap-start group block">
                           <motion.div 
                             className="relative aspect-[3/4] rounded-xl overflow-hidden border border-border-divider"
                             whileHover={{ scale: 1.05 }}
@@ -252,64 +244,22 @@ export default function Home() {
                     <p className="text-xs text-text-muted italic">Your library shelf is empty. Pin manga titles from the catalog to see them here.</p>
                   )}
                 </div>
-
-                <div>
-                  <Link href="/library" className="inline-block bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-bold text-[9px] uppercase tracking-widest px-4 py-2 rounded-full select-none">
-                    Open Library
-                  </Link>
-                </div>
-              </ProximityDistortion>
-            </ZeroGFloating>
-          </EuclideanWaveItem>
-
-          <EuclideanWaveItem 
-            id="bento-genres"
-            className="md:col-span-2 bg-surface border border-border-divider rounded-3xl p-4 sm:p-8 flex flex-col justify-between min-h-[250px] md:min-h-[340px] relative overflow-hidden group"
-            whileHover={{ y: -4, borderColor: 'var(--accent-base)' }}
-            transition={{ type: 'spring', stiffness: 450, damping: 30 }}
-          >
-            <ZeroGFloating className="flex flex-col justify-between h-full w-full">
-              <ProximityDistortion className="flex flex-col justify-between h-full w-full rounded-3xl">
-                <div>
-                  <div className="text-[10px] text-accent font-black uppercase tracking-wider mb-2">Editorial Genres</div>
-                  <h2 className="text-base md:text-xl font-black uppercase tracking-tight text-text-primary">
-                    <KineticTypography text="Quick Browse" />
-                  </h2>
-                  <p className="text-xs text-text-muted mt-1 leading-relaxed">Explore catalog categories curated by demographic and genre tags.</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 my-4">
-                  {[
-                    { name: 'Action', id: '391b0423-d847-456f-aff0-8b0cfc03066b', idx: '01' },
-                    { name: 'Romance', id: '423e2eae-a7a2-4a8b-ac03-a8351462d71d', idx: '02' },
-                    { name: 'Fantasy', id: 'cdc58593-87dd-415e-bbc0-2ec27bf404cc', idx: '03' },
-                    { name: 'Comedy', id: '4d32cc48-9d00-4cca-9b5a-a839f0764984', idx: '04' },
-                  ].map((genre) => (
-                    <Link
-                      key={genre.id}
-                      href={`/search?tags=${genre.id}`}
-                      className="group flex items-center justify-between border border-border-divider/50 hover:border-accent/40 bg-surface/50 hover:bg-surface p-2.5 rounded-xl transition-all duration-300 select-none"
-                    >
-                      <div className="flex flex-col text-left">
-                        <span className="text-[8px] text-text-muted font-mono">{genre.idx}</span>
-                        <span className="text-[11px] font-bold text-text-primary uppercase tracking-wider">{genre.name}</span>
-                      </div>
-                      <div className="w-5 h-5 rounded-full border border-border-divider group-hover:border-accent/40 group-hover:bg-accent/5 flex items-center justify-center transition-colors">
-                        <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent transition-colors" />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-
-                <div>
-                  <Link href="/categories" className="inline-flex items-center gap-2 border border-border-divider text-text-primary hover:bg-bg-app transition-colors font-sans font-bold text-[9px] uppercase tracking-widest px-4 py-2 rounded-full select-none">
-                    All Categories
-                  </Link>
-                </div>
               </ProximityDistortion>
             </ZeroGFloating>
           </EuclideanWaveItem>
         </div>
+
+        {isAnyError && (
+          <div className="p-8 border border-accent bg-accent/5 font-sans text-xs text-center rounded-2xl">
+            <p className="text-text-primary mb-3 uppercase font-bold">Failed to load content from MangaDex</p>
+            <p className="text-text-muted mb-4 max-w-md mx-auto leading-relaxed">
+              This might be due to rate limiting or connection problems. Please check your internet connection.
+            </p>
+            <button onClick={handleRetryAll} className="border border-border-divider text-text-primary hover:bg-surface px-5 py-2 rounded-full cursor-pointer select-none font-bold uppercase tracking-wider text-[10px]">
+              Retry Connection
+            </button>
+          </div>
+        )}
 
         <ViewportContain placeholderHeight="320px">
           <section className="space-y-6 font-sans">
@@ -326,13 +276,13 @@ export default function Home() {
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
               {loadingTrending ? (
                 Array.from({ length: 6 }).map((_, idx) => (
-                  <EuclideanWaveItem key={idx} id={`trending-skeleton-${idx}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={idx} id={`trending-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCardSkeleton />
                   </EuclideanWaveItem>
                 ))
               ) : (
                 trending?.items.map((m) => (
-                  <EuclideanWaveItem key={m.id} id={`trending-${m.id}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={m.id} id={`trending-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCard manga={m} namespace="trending" />
                   </EuclideanWaveItem>
                 ))
@@ -356,13 +306,13 @@ export default function Home() {
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
               {loadingLatest ? (
                 Array.from({ length: 6 }).map((_, idx) => (
-                  <EuclideanWaveItem key={idx} id={`latest-skeleton-${idx}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={idx} id={`latest-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCardSkeleton />
                   </EuclideanWaveItem>
                 ))
               ) : (
                 latest?.items.map((m) => (
-                  <EuclideanWaveItem key={m.id} id={`latest-${m.id}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={m.id} id={`latest-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCard manga={m} namespace="latest" />
                   </EuclideanWaveItem>
                 ))
@@ -386,13 +336,13 @@ export default function Home() {
             <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x scroll-smooth">
               {loadingRecent ? (
                 Array.from({ length: 6 }).map((_, idx) => (
-                  <EuclideanWaveItem key={idx} id={`recent-skeleton-${idx}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={idx} id={`recent-skeleton-${idx}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCardSkeleton />
                   </EuclideanWaveItem>
                 ))
               ) : (
                 recent?.items.map((m) => (
-                  <EuclideanWaveItem key={m.id} id={`recent-${m.id}`} className="w-[110px] sm:w-[140px] md:w-[170px] shrink-0 snap-start">
+                  <EuclideanWaveItem key={m.id} id={`recent-${m.id}`} className="w-[90px] sm:w-[130px] md:w-[160px] shrink-0 snap-start">
                     <MangaCard manga={m} namespace="recent" />
                   </EuclideanWaveItem>
                 ))
