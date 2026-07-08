@@ -31,7 +31,7 @@ export default function Home() {
     queryKey: ['manga', 'trending', sfwMode],
     queryFn: () =>
       fetchMangaList({
-        limit: 50,
+        limit: 20,
         order: { followedCount: 'desc' },
         contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
       }),
@@ -67,6 +67,23 @@ export default function Home() {
       }),
   });
 
+  // Wave gates: category sections load only after above-fold content is ready
+  const primaryDone = !loadingTrending && !loadingLatest && !loadingRecent;
+  const [wave2Ready, setWave2Ready] = useState(false);
+  const [wave3Ready, setWave3Ready] = useState(false);
+
+  useEffect(() => {
+    if (!primaryDone) return;
+    const t = setTimeout(() => setWave2Ready(true), 300);
+    return () => clearTimeout(t);
+  }, [primaryDone]);
+
+  useEffect(() => {
+    if (!wave2Ready) return;
+    const t = setTimeout(() => setWave3Ready(true), 600);
+    return () => clearTimeout(t);
+  }, [wave2Ready]);
+
   // MangaDex stable tag UUIDs
   const TAG_ACTION  = '391b0423-d847-456f-aff0-8f0cec6cf629';
   const TAG_ROMANCE = '423e2eae-a7a2-4a8b-ac03-a8351462d71d';
@@ -74,81 +91,50 @@ export default function Home() {
   const TAG_COMEDY  = '4d32cc48-9f00-4cbe-9bc4-9d4daae0b6e8';
   const TAG_FANTASY = 'cdc58593-87dd-415e-bbc0-2ec27bf404cc';
   const TAG_SCIFI   = '256c8bd9-4904-4360-bf4f-508a76d67183';
+  const contentRating = sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'];
 
+  // Wave 2 — fires 300ms after primary content loads
   const { data: topRated, isLoading: loadingTopRated } = useQuery({
     queryKey: ['manga', 'topRated', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        order: { rating: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, order: { rating: 'desc' }, contentRating }),
+    enabled: wave2Ready,
   });
 
   const { data: action, isLoading: loadingAction } = useQuery({
     queryKey: ['manga', 'action', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_ACTION],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_ACTION], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave2Ready,
   });
 
   const { data: romance, isLoading: loadingRomance } = useQuery({
     queryKey: ['manga', 'romance', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_ROMANCE],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_ROMANCE], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave2Ready,
   });
 
+  // Wave 3 — fires 900ms after primary content loads
   const { data: drama, isLoading: loadingDrama } = useQuery({
     queryKey: ['manga', 'drama', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_DRAMA],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_DRAMA], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave3Ready,
   });
 
   const { data: comedy, isLoading: loadingComedy } = useQuery({
     queryKey: ['manga', 'comedy', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_COMEDY],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_COMEDY], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave3Ready,
   });
 
   const { data: fantasy, isLoading: loadingFantasy } = useQuery({
     queryKey: ['manga', 'fantasy', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_FANTASY],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_FANTASY], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave3Ready,
   });
 
   const { data: scifi, isLoading: loadingScifi } = useQuery({
     queryKey: ['manga', 'scifi', sfwMode],
-    queryFn: () =>
-      fetchMangaList({
-        limit: 15,
-        tags: [TAG_SCIFI],
-        order: { followedCount: 'desc' },
-        contentRating: sfwMode ? ['safe', 'suggestive'] : ['safe', 'suggestive', 'erotica', 'pornographic'],
-      }),
+    queryFn: () => fetchMangaList({ limit: 15, tags: [TAG_SCIFI], order: { followedCount: 'desc' }, contentRating }),
+    enabled: wave3Ready,
   });
 
   const spotlightItems = useMemo(() => {
