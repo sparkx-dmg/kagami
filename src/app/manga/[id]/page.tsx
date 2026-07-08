@@ -73,9 +73,14 @@ const listItemVariants = {
   }
 } as const;
 
-export default function MangaDetailsPage(props: { params: Promise<{ id: string }> }) {
+export default function MangaDetailsPage(props: { 
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const params = use(props.params);
+  const searchParams = use(props.searchParams);
   const id = params.id;
+  const from = typeof searchParams.from === 'string' ? searchParams.from : '';
   const sfwMode = useSettingsStore((state) => state.settings.sfwMode);
   const updateSettings = useSettingsStore((state) => state.updateSettings);
 
@@ -88,12 +93,14 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
   const [selectedLang, setSelectedLang] = useState('en');
   const [copied, setCopied] = useState(false);
   const [downloadingChapterId, setDownloadingChapterId] = useState<string | null>(null);
+  const [coverLoaded, setCoverLoaded] = useState(false);
 
   const [userRating, setUserRating] = useState(0);
   const [notesText, setNotesText] = useState('');
   const [showFullSynopsis, setShowFullSynopsis] = useState(false);
   const [expandedVolume, setExpandedVolume] = useState<string | null>(null);
   const [transitioningVolume, setTransitioningVolume] = useState<string | null>(null);
+  const [expandedVolumesCount, setExpandedVolumesCount] = useState<Record<string, number>>({});
 
   useEffect(() => {
     if (libraryItem) {
@@ -155,21 +162,32 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
     queryFn: () => fetchMangaDetails(id),
   });
 
+  const availableLangs = useMemo(() => {
+    const langs = manga?.availableTranslatedLanguages ? [...manga.availableTranslatedLanguages] : [];
+    if (!langs.includes('en')) {
+      langs.unshift('en');
+    }
+    return langs;
+  }, [manga?.availableTranslatedLanguages]);
+
   const {
     data: feed,
     isLoading: loadingFeed,
     isError: errorFeed,
   } = useQuery({
     queryKey: ['manga', 'feed', id, selectedLang],
-    queryFn: () => fetchChapterFeed(id, { translatedLanguage: [selectedLang] }),
+    queryFn: () => fetchChapterFeed(id, { 
+      translatedLanguage: selectedLang === 'all' ? availableLangs : [selectedLang] 
+    }),
     enabled: !!manga,
   });
 
   const { data: fallbackFeed } = useQuery({
-    queryKey: ['manga', 'fallback-chapters', manga?.title],
+    queryKey: ['manga', 'fallback-chapters', manga?.title, manga?.alternativeTitles],
     queryFn: async () => {
       if (!manga?.title) return null;
-      const res = await fetch(`/api/fallback/chapters?title=${encodeURIComponent(manga.title)}`);
+      const altTitles = manga.alternativeTitles ? Object.values(manga.alternativeTitles) : [];
+      const res = await fetch(`/api/fallback/chapters?title=${encodeURIComponent(manga.title)}&altTitles=${encodeURIComponent(JSON.stringify(altTitles))}`);
       if (!res.ok) return null;
       return await res.json() as Array<{
         id: string;
@@ -180,19 +198,11 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
         pages: number;
       }>;
     },
-    enabled: !!manga && selectedLang === 'en',
+    enabled: !!manga && (selectedLang === 'en' || selectedLang === 'all'),
   });
 
-  const availableLangs = useMemo(() => {
-    const langs = manga?.availableTranslatedLanguages ? [...manga.availableTranslatedLanguages] : [];
-    if (!langs.includes('en')) {
-      langs.unshift('en');
-    }
-    return langs;
-  }, [manga?.availableTranslatedLanguages]);
-
   useEffect(() => {
-    if (manga) {
+    if (manga && selectedLang !== 'all') {
       if (availableLangs.length > 0 && !availableLangs.includes(selectedLang)) {
         if (availableLangs.includes('en')) {
           setSelectedLang('en');
@@ -295,13 +305,13 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
   const rawChapters = feed?.items || [];
   const chapters = [...rawChapters];
 
-  if (selectedLang === 'en' && fallbackFeed && fallbackFeed.length > 0) {
+  if ((selectedLang === 'en' || selectedLang === 'all') && fallbackFeed && fallbackFeed.length > 0) {
     const mergedChapters: typeof rawChapters = [];
     const weebCentralNums = new Set(fallbackFeed.map((ch) => parseFloat(ch.chapterNumber).toString()));
 
     rawChapters.forEach((ch) => {
       const chNum = parseFloat(ch.chapterNumber).toString();
-      if (!weebCentralNums.has(chNum)) {
+      if (ch.translatedLanguage !== 'en' || !weebCentralNums.has(chNum)) {
         mergedChapters.push(ch);
       }
     });
@@ -410,13 +420,21 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
           <div className="space-y-4">
             <div className="aspect-[3/4] w-full bg-surface-solid border border-border-divider overflow-hidden rounded-2xl shadow-xl transition-all duration-300 hover:scale-[1.01] hover:border-accent">
               {manga.cover ? (
-                <ViewTransition name={`cover-${manga.id}`}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img 
-                    src={manga.cover} 
-                    alt={manga.title} 
-                    className="object-cover w-full h-full" 
-                  />
+                <ViewTransition name={from ? `cover-${from}-${manga.id}` : `cover-${manga.id}`}>
+                  <div className="relative w-full h-full">
+                    {!coverLoaded && (
+                      <div className="absolute inset-0 shimmer-bg" />
+                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={manga.cover} 
+                      alt={manga.title} 
+                      onLoad={() => setCoverLoaded(true)}
+                      className={`object-cover w-full h-full transition-opacity duration-300 ${
+                        coverLoaded ? 'opacity-100' : 'opacity-0'
+                      }`} 
+                    />
+                  </div>
                 </ViewTransition>
               ) : (
                 <div className="w-full h-full flex flex-col items-center justify-center text-text-muted text-[10px] font-bold uppercase tracking-widest bg-surface">
@@ -476,7 +494,7 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
 
                 return (
                   <>
-                    <h1 className="text-3xl md:text-5xl font-extrabold font-serif tracking-tight text-text-primary leading-tight">{manga.title}</h1>
+                    <h1 className="text-3xl md:text-5xl font-extrabold font-serif tracking-tighter text-text-primary leading-tight">{manga.title}</h1>
                     {englishAlt && englishAlt.toLowerCase() !== manga.title.toLowerCase() && (
                       <p className="text-sm md:text-base font-sans font-semibold text-accent/90 tracking-wide mt-1">
                         {englishAlt}
@@ -605,6 +623,7 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                   onChange={(e) => setSelectedLang(e.target.value)}
                   className="h-8 border border-border-divider bg-surface px-2 text-[10px] font-mono uppercase text-text-primary focus:outline-none"
                 >
+                  <option value="all">All Languages</option>
                   {availableLangs.map((lang) => (
                     <option key={lang} value={lang}>
                       {LANGUAGE_NAMES[lang] || `${lang.toUpperCase()} (${lang.toUpperCase()})`}
@@ -648,6 +667,11 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                 const isExpanded = activeVol === vol;
                 const isTransitioning = transitioningVolume === vol;
 
+                const limit = expandedVolumesCount[vol] ?? 50;
+                const visibleChapters = volChapters.slice(0, limit);
+                const hasMore = volChapters.length > limit;
+                const isLargeList = volChapters.length > 50;
+
                 return (
                   <div key={vol} className="border border-border-divider/60 rounded-2xl overflow-hidden bg-surface/30">
                     <button
@@ -664,17 +688,19 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                     <div 
                       className={cn(
                         "transition-all duration-500 ease-in-out overflow-hidden",
-                        isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+                        isExpanded 
+                          ? (limit > 50 ? "max-h-none opacity-100" : "max-h-[5000px] opacity-100") 
+                          : "max-h-0 opacity-0 pointer-events-none"
                       )}
                       style={{ willChange: 'max-height, opacity' }}
                     >
                       <motion.div
-                        variants={listContainerVariants}
-                        initial="hidden"
-                        animate={isExpanded ? "show" : "hidden"}
+                        variants={isLargeList ? undefined : listContainerVariants}
+                        initial={isLargeList ? undefined : "hidden"}
+                        animate={isExpanded ? (isLargeList ? undefined : "show") : "hidden"}
                         className="p-4 space-y-2.5 font-mono text-[10px] uppercase text-text-primary"
                       >
-                        {volChapters.map((ch) => {
+                        {visibleChapters.map((ch) => {
                           const isRead = history[manga.id]?.some((h) => h.chapterId === ch.id) || false;
                           const isDownloaded = isChapterDownloaded(ch.id);
                           const isLastRead = lastReadChapterId === ch.id;
@@ -682,7 +708,7 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                           return (
                             <motion.div
                               key={ch.id}
-                              variants={listItemVariants}
+                              variants={isLargeList ? undefined : listItemVariants}
                               className={cn(
                                 "flex items-center justify-between border border-border-divider/50 p-3 rounded-xl transition-all duration-300",
                                 isRead ? "bg-surface/40 border-border-divider/20 opacity-75" : "bg-surface/80",
@@ -700,6 +726,9 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                                 </span>
                                 {isLastRead && (
                                   <Badge variant="accent" className="rounded-full px-2 text-[7px] font-bold shrink-0 tracking-wider">Last Read</Badge>
+                                )}
+                                {selectedLang === 'all' && (
+                                  <Badge variant="source" className="rounded-full px-2 text-[7px] font-bold shrink-0 tracking-wider uppercase">{ch.translatedLanguage}</Badge>
                                 )}
                               </div>
 
@@ -747,6 +776,26 @@ export default function MangaDetailsPage(props: { params: Promise<{ id: string }
                           );
                         })}
                       </motion.div>
+                      {hasMore && (
+                        <div className="p-4 pt-0 flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setExpandedVolumesCount((prev) => ({ ...prev, [vol]: (prev[vol] ?? 50) + 100 }))}
+                            className="flex-1 h-9 text-[9px] font-bold tracking-widest uppercase rounded-lg cursor-pointer"
+                          >
+                            Show More (+{Math.min(100, volChapters.length - limit)} Chapters)
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setExpandedVolumesCount((prev) => ({ ...prev, [vol]: volChapters.length }))}
+                            className="h-9 px-4 text-[9px] font-bold tracking-widest uppercase rounded-lg cursor-pointer"
+                          >
+                            Show All ({volChapters.length})
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );

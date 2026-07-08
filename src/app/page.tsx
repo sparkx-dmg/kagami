@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AppShell } from '@/components/layout/AppShell';
 import { MangaCard } from '@/components/manga/MangaCard';
@@ -66,11 +66,12 @@ export default function Home() {
       }),
   });
 
-  const spotlightItems = React.useMemo(() => {
+  const spotlightItems = useMemo(() => {
     return trending?.items || [];
   }, [trending?.items]);
 
   const [activeIdx, setActiveIdx] = useState(0);
+  const [spotlightImageLoaded, setSpotlightImageLoaded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (spotlightItems.length === 0) return;
@@ -127,7 +128,7 @@ export default function Home() {
                   <div className="text-[10px] text-accent font-black uppercase tracking-widest flex items-center gap-1.5 shrink-0">
                     <Sparkles className="w-3.5 h-3.5 text-accent animate-pulse" /> Curated Spotlight
                   </div>
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight text-text-primary font-serif leading-tight line-clamp-2">
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-2">
                     {spotlightManga.title}
                   </h2>
                   <p className="text-[10px] text-text-muted font-mono uppercase tracking-widest shrink-0 truncate">
@@ -175,12 +176,18 @@ export default function Home() {
                   initial={{ rotate: 2 }}
                   transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                 >
-                  <Link href={`/manga/${spotlightManga.id}`}>
+                  <Link href={`/manga/${spotlightManga.id}`} className="relative w-full h-full block">
+                    {!spotlightImageLoaded[spotlightManga.id] && (
+                      <div className="absolute inset-0 shimmer-bg" />
+                    )}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={spotlightManga.cover || ''}
                       alt={spotlightManga.title}
-                      className="w-full h-full object-cover"
+                      onLoad={() => setSpotlightImageLoaded(prev => ({ ...prev, [spotlightManga.id]: true }))}
+                      className={`w-full h-full object-cover transition-opacity duration-300 ${
+                        spotlightImageLoaded[spotlightManga.id] ? 'opacity-100' : 'opacity-0'
+                      }`}
                     />
                   </Link>
                 </motion.div>
@@ -326,7 +333,7 @@ export default function Home() {
               ) : (
                 trending?.items.map((m) => (
                   <EuclideanWaveItem key={m.id} id={`trending-${m.id}`} className="w-[140px] md:w-[170px] shrink-0 snap-start">
-                    <MangaCard manga={m} />
+                    <MangaCard manga={m} namespace="trending" />
                   </EuclideanWaveItem>
                 ))
               )}
@@ -356,7 +363,7 @@ export default function Home() {
               ) : (
                 latest?.items.map((m) => (
                   <EuclideanWaveItem key={m.id} id={`latest-${m.id}`} className="w-[140px] md:w-[170px] shrink-0 snap-start">
-                    <MangaCard manga={m} />
+                    <MangaCard manga={m} namespace="latest" />
                   </EuclideanWaveItem>
                 ))
               )}
@@ -386,7 +393,7 @@ export default function Home() {
               ) : (
                 recent?.items.map((m) => (
                   <EuclideanWaveItem key={m.id} id={`recent-${m.id}`} className="w-[140px] md:w-[170px] shrink-0 snap-start">
-                    <MangaCard manga={m} />
+                    <MangaCard manga={m} namespace="recent" />
                   </EuclideanWaveItem>
                 ))
               )}

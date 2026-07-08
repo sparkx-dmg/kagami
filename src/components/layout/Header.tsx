@@ -55,7 +55,7 @@ export function Header() {
                   <motion.span
                     layoutId="activeNavTab"
                     className="absolute inset-0 bg-text-primary rounded-full -z-10"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.1 }}
                   />
                 )}
                 <span>{item.label}</span>
@@ -99,9 +99,9 @@ export function Header() {
 
           <motion.button
             onClick={() => window.location.reload()}
-            whileHover={{ scale: 1.1, rotate: 180 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+            whileHover={{ scale: 1.08, rotate: 180 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
             className="flex items-center justify-center w-7 h-7 rounded-full border border-border-divider bg-bg-app/40 text-text-primary hover:bg-surface transition-colors cursor-pointer"
             aria-label="Refresh Page"
           >
@@ -110,9 +110,9 @@ export function Header() {
 
           <motion.button
             onClick={toggleTheme}
-            whileHover={{ scale: 1.1, rotate: 15 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+            whileHover={{ scale: 1.08, rotate: 15 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
             className="flex items-center justify-center w-7 h-7 rounded-full border border-border-divider bg-bg-app/40 text-text-primary hover:bg-surface transition-colors cursor-pointer"
             aria-label="Toggle Theme"
           >

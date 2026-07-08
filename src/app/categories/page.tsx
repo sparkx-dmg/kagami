@@ -337,7 +337,7 @@ export default function CategoriesPage() {
                       ? Array.from({ length: 6 }).map((_, idx) => <MangaCardSkeleton key={idx} />)
                       : cur.data?.items.slice(0, 6).map((m) => (
                           <motion.div key={m.id} variants={scaleInItem}>
-                            <MangaCard manga={m} />
+                            <MangaCard manga={m} namespace={cur.id} />
                           </motion.div>
                         ))}
                   </motion.div>

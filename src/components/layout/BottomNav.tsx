@@ -20,9 +20,9 @@ export function BottomNav() {
   return (
     <motion.nav
       className="md:hidden fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-md border-t border-border-divider/40 h-14 flex items-center justify-around z-40 select-none font-mono text-[9px] uppercase tracking-wider"
-      initial={{ y: 60, opacity: 0 }}
+      initial={{ y: 30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ type: 'spring', stiffness: 340, damping: 30, delay: 0.1 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 32, delay: 0.05 }}
     >
       {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
@@ -39,9 +39,9 @@ export function BottomNav() {
             )}
           >
             <motion.div
-              whileHover={{ y: -2, scale: 1.08 }}
-              whileTap={{ scale: 0.9 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 20 }}
+              whileHover={{ y: -1, scale: 1.04 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 24 }}
               className="flex flex-col items-center space-y-1"
             >
               <Icon className="w-4.5 h-4.5" />
@@ -50,8 +50,8 @@ export function BottomNav() {
             {isActive && (
               <motion.span
                 layoutId="activeBottomTab"
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-accent"
-                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[#F5F5F0]"
+                transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.1 }}
               />
             )}
           </Link>

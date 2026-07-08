@@ -367,7 +367,7 @@ function SearchContent() {
               >
                 {data?.items.map((m) => (
                   <motion.div key={m.id} variants={itemVariants}>
-                    <MangaCard manga={m} />
+                    <MangaCard manga={m} namespace="search" />
                   </motion.div>
                 ))}
               </motion.div>

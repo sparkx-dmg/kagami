@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/utils/cn';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ReaderPage(props: { params: Promise<{ chapterId: string }> }) {
   const params = use(props.params);
@@ -207,22 +208,7 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [settings.readingDirection, handleNextPage, handlePrevPage, toggleFullscreen, toggleControls]);
 
-  useEffect(() => {
-    if (settings.readerMode !== 'webtoon') return;
-    let lastScrollY = window.scrollY, lerpedVelocity = 0, frameId: number;
-    const tick = () => {
-      const curr = window.scrollY;
-      const velocity = curr - lastScrollY;
-      lastScrollY = curr;
-      lerpedVelocity = lerpedVelocity * 0.9 + velocity * 0.1;
-      const compressY = 1 - Math.min(Math.abs(lerpedVelocity) * 0.0001, 0.04);
-      const compressX = 1 - Math.min(Math.abs(lerpedVelocity) * 0.00003, 0.012);
-      if (webtoonContainerRef.current) webtoonContainerRef.current.style.transform = `scaleY(${compressY}) scaleX(${compressX})`;
-      frameId = requestAnimationFrame(tick);
-    };
-    frameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frameId);
-  }, [settings.readerMode]);
+  // Native device scrolling track utilized in Webtoon mode with GPU compositing (no Janky scroll-scaling loop)
 
   useEffect(() => {
     if (settings.readerMode !== 'webtoon' || totalPages === 0) return;
@@ -538,7 +524,7 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
             <div
               ref={webtoonContainerRef}
               className="max-w-3xl w-full flex flex-col items-center space-y-3 px-4 py-6"
-              style={{ willChange: 'transform' }}
+              style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)' }}
             >
               {Array.from({ length: totalPages }).map((_, index) => {
                 const url = getPageUrl(index);
@@ -586,14 +572,21 @@ export default function ReaderPage(props: { params: Promise<{ chapterId: string 
                     <Button variant="outline" size="sm" onClick={() => handleRetryImage(currentPage)}>Retry Page</Button>
                   </div>
                 ) : (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={getPageUrl(currentPage)}
-                    alt={`Page ${currentPage + 1}`}
-                    onError={() => handleImageError(currentPage)}
-                    className={`${pageFitClass} rounded-lg border border-border-divider/40 bg-surface-solid shadow-2xl shadow-black/20 transition-all duration-300`}
-                    decoding="async"
-                  />
+                    <AnimatePresence mode="wait">
+                      <motion.img
+                        key={currentPage}
+                        src={getPageUrl(currentPage)}
+                        alt={`Page ${currentPage + 1}`}
+                        onError={() => handleImageError(currentPage)}
+                        initial={{ opacity: 0, x: isRtl ? -16 : 16 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: isRtl ? 16 : -16 }}
+                        transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.15 }}
+                        className={`${pageFitClass} rounded-lg border border-border-divider/40 bg-surface-solid shadow-2xl shadow-black/20`}
+                        decoding="async"
+                        style={{ willChange: 'transform' }}
+                      />
+                    </AnimatePresence>
                 )}
               </div>
 

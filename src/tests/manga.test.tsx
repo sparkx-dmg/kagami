@@ -80,6 +80,16 @@ vi.mock('@/services/mangadex/mangaCatalogService', () => ({
   }),
 }));
 
+// Mock global and window fetch
+const mockFetch = vi.fn().mockResolvedValue({
+  ok: true,
+  json: () => Promise.resolve([]),
+});
+global.fetch = mockFetch;
+if (typeof window !== 'undefined') {
+  window.fetch = mockFetch;
+}
+
 // Mock Next.js navigation hooks
 vi.mock('next/navigation', () => ({
   usePathname: () => '/manga/mangadex-12345',
@@ -139,11 +149,13 @@ describe('Manga Detail Page Component', () => {
     // Resolve hook promise params
     const mockParams = Promise.resolve({ id: 'mangadex-12345' }) as any;
     mockParams._resolved = { id: 'mangadex-12345' };
+    const mockSearchParams = Promise.resolve({}) as any;
+    mockSearchParams._resolved = {};
     
     render(
       <QueryClientProvider client={queryClient}>
         <React.Suspense fallback={<div>Loading...</div>}>
-          <MangaDetailsPage params={mockParams} />
+          <MangaDetailsPage params={mockParams} searchParams={mockSearchParams} />
         </React.Suspense>
       </QueryClientProvider>
     );
@@ -176,11 +188,13 @@ describe('Manga Detail Page Component', () => {
   it('blocks erotica content when sfwMode is enabled', async () => {
     const mockParams = Promise.resolve({ id: 'mangadex-nsfw' }) as any;
     mockParams._resolved = { id: 'mangadex-nsfw' };
+    const mockSearchParams = Promise.resolve({}) as any;
+    mockSearchParams._resolved = {};
 
     render(
       <QueryClientProvider client={queryClient}>
         <React.Suspense fallback={<div>Loading...</div>}>
-          <MangaDetailsPage params={mockParams} />
+          <MangaDetailsPage params={mockParams} searchParams={mockSearchParams} />
         </React.Suspense>
       </QueryClientProvider>
     );

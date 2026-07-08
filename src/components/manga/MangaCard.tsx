@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, ViewTransition } from 'react';
+import React, { useRef, useState, ViewTransition } from 'react';
 import { ZeroGFloating, BalloonClick } from '@/components/ui/KineticCore';
 import Link from 'next/link';
 import { KagamiManga } from '@/types/manga';
@@ -9,12 +9,14 @@ import { BookOpen, ExternalLink, Calendar } from 'lucide-react';
 
 interface MangaCardProps {
   manga: KagamiManga;
+  namespace?: string;
 }
 
-export function MangaCard({ manga }: MangaCardProps) {
+export function MangaCard({ manga, namespace }: MangaCardProps) {
   const isSupplemental = manga.source === 'supplemental';
   const coverRef = useRef<HTMLDivElement>(null);
   const rectRef = useRef<DOMRect | null>(null);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
     rectRef.current = e.currentTarget.getBoundingClientRect();
@@ -47,7 +49,7 @@ export function MangaCard({ manga }: MangaCardProps) {
 
   return (
     <Link 
-      href={`/manga/${manga.id}`} 
+      href={`/manga/${manga.id}${namespace ? `?from=${namespace}` : ''}`} 
       onMouseEnter={handleMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -62,14 +64,22 @@ export function MangaCard({ manga }: MangaCardProps) {
           style={{ willChange: 'transform' }}
         >
           {manga.cover ? (
-            <ViewTransition name={`cover-${manga.id}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={manga.cover}
-                alt={manga.title}
-                className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-103 group-focus-visible:scale-103"
-                loading="lazy"
-              />
+            <ViewTransition name={namespace ? `cover-${namespace}-${manga.id}` : `cover-${manga.id}`}>
+              <div className="relative w-full h-full">
+                {!imageLoaded && (
+                  <div className="absolute inset-0 shimmer-bg" />
+                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={manga.cover}
+                  alt={manga.title}
+                  onLoad={() => setImageLoaded(true)}
+                  className={`object-cover w-full h-full transition-all duration-300 group-hover:scale-103 group-focus-visible:scale-103 ${
+                    imageLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  loading="lazy"
+                />
+              </div>
             </ViewTransition>
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-text-muted bg-surface font-sans text-[10px] font-bold tracking-widest">

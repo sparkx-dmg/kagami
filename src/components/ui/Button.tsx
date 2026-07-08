@@ -51,9 +51,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
       controls.start({
-        scaleX: 1.15,
-        scaleY: 0.85,
-        transition: { type: 'spring', stiffness: 500, damping: 15 }
+        scaleX: 1.06,
+        scaleY: 0.94,
+        transition: { type: 'spring', stiffness: 600, damping: 18 }
       });
       if (props.onPointerDown) props.onPointerDown(e);
     };
@@ -64,9 +64,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         scaleY: 1.0,
         transition: {
           type: 'spring',
-          stiffness: 800,
-          damping: 10,
-          mass: 0.5,
+          stiffness: 900,
+          damping: 14,
+          mass: 0.4,
         }
       });
       if (props.onPointerUp) props.onPointerUp(e);
@@ -78,9 +78,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         scaleY: 1.0,
         transition: {
           type: 'spring',
-          stiffness: 800,
-          damping: 10,
-          mass: 0.5,
+          stiffness: 900,
+          damping: 14,
+          mass: 0.4,
         }
       });
       if (props.onMouseLeave) props.onMouseLeave(e);

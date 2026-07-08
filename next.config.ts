@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    viewTransition: true,
-  },
+  /* Snappy instant navigation without browser-level transition blocking */
 };
 
 export default nextConfig;

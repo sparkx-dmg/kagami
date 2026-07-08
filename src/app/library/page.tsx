@@ -71,23 +71,23 @@ export default function LibraryPage() {
         </div>
 
         {/* Tab Switcher with fluid layout slide */}
-        <div className="flex flex-wrap gap-2 p-1 bg-surface/20 rounded-lg border border-border-divider/30 max-w-max font-mono text-xs select-none">
+        <div className="flex flex-wrap gap-1.5 p-1 bg-surface/30 rounded-full border border-border-divider/30 max-w-max font-mono text-xs select-none">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.value;
             return (
               <button
                 key={tab.value}
                 onClick={() => setActiveTab(tab.value)}
-                className="relative px-3 py-1.5 rounded-md uppercase tracking-wider cursor-pointer transition-colors duration-200 text-text-muted hover:text-text-primary z-10"
+                className="relative px-4 py-1.5 rounded-full uppercase tracking-wider cursor-pointer transition-colors duration-100 z-10"
               >
                 {isActive && (
                   <motion.span
                     layoutId="activeLibraryTab"
-                    className="absolute inset-0 bg-accent rounded-md -z-10 shadow-md shadow-accent/15"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    className="absolute inset-0 bg-[#F5F5F0] rounded-full -z-10"
+                    transition={{ ease: [0.16, 1, 0.3, 1], duration: 0.1 }}
                   />
                 )}
-                <span className={isActive ? "text-accent-foreground font-bold" : ""}>
+                <span className={isActive ? "text-[#0B0B0A] font-bold" : "text-text-muted hover:text-text-primary"}>
                   {tab.label}
                 </span>
               </button>
@@ -123,7 +123,7 @@ export default function LibraryPage() {
             >
               {filteredList.map((item) => (
                 <motion.div key={item.mangaId} variants={itemVariants}>
-                  <MangaCard manga={item.manga} />
+                  <MangaCard manga={item.manga} namespace="library" />
                 </motion.div>
               ))}
             </motion.div>

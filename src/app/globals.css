@@ -39,15 +39,15 @@ html.accent-wasabi {
 
 /* Dark Mode (Obsidian & Charcoal Slate) overrides */
 html.dark {
-  --background: #060606;
-  --surface: #0E0E0E;
-  --surface-solid: #151515;
-  --text-primary: #F4F4F3;
-  --text-muted: #85837F;
-  --border: #1A1A19;
+  --background: #0B0B0A;
+  --surface: #141413;
+  --surface-solid: #141413;
+  --text-primary: #F5F5F0;
+  --text-muted: #8A8A85;
+  --border: #262624;
   
   --accent-base: #F97316;
-  --accent-foreground: #060606;
+  --accent-foreground: #0B0B0A;
 }
 
 /* Accent Class Overrides - Dark Mode */
@@ -379,6 +379,13 @@ h4, h5, h6, .heading-sans {
   );
   background-size: 800px 100%;
   animation: shimmer 1.6s infinite linear;
+}
+
+/* Obsidian low-intensity, high-frequency shimmer lock */
+.shimmer-bg {
+  background: linear-gradient(90deg, #141413 25%, #262624 50%, #141413 75%);
+  background-size: 200% 100%;
+  animation: shimmer 0.8s infinite linear;
 }
 
 /* Stagger delay helpers for CSS-only lists */
