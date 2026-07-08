@@ -328,7 +328,7 @@ export default function CategoriesPage() {
 
                   {/* Step 6: Staggered manga card grid inside each curation */}
                   <motion.div
-                    className="grid grid-cols-2 max-[480px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4"
+                    className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5"
                     variants={staggerContainerFast}
                     initial='hidden'
                     animate='show'

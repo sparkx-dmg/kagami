@@ -347,7 +347,7 @@ function SearchContent() {
       {!isError && (
         <div>
           {isLoading ? (
-            <div className="grid grid-cols-2 max-[480px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
               {Array.from({ length: 12 }).map((_, idx) => (
                 <MangaCardSkeleton key={idx} />
               ))}
@@ -363,7 +363,7 @@ function SearchContent() {
                 variants={containerVariants}
                 initial="hidden"
                 animate="show"
-                className="grid grid-cols-2 max-[480px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-6 gap-4"
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5"
               >
                 {data?.items.map((m) => (
                   <motion.div key={m.id} variants={itemVariants}>

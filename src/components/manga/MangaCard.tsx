@@ -91,7 +91,7 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
           {manga.demographic !== 'none' && (
             <div className="absolute top-2.5 left-2.5 z-10">
               <BalloonClick>
-                <Badge variant="accent" className="bg-surface/95 border border-border-divider text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider text-text-primary">
+                <Badge variant="accent" className="bg-surface/95 border border-border-divider text-[7px] sm:text-[8px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase tracking-wider text-text-primary">
                   {manga.demographic}
                 </Badge>
               </BalloonClick>
@@ -102,11 +102,11 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
           <div className="absolute top-2.5 right-2.5 z-10">
             <BalloonClick>
               {manga.status === 'completed' ? (
-                <Badge variant="accent" className="bg-emerald-500/90 text-white border-none text-[8px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+                <Badge variant="accent" className="bg-emerald-500/90 text-white border-none text-[7px] sm:text-[8px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                   Finished
                 </Badge>
               ) : (
-                <Badge variant="source" className="bg-border-divider text-text-primary border-none text-[8px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+                <Badge variant="source" className="bg-border-divider text-text-primary border-none text-[7px] sm:text-[8px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full tracking-wider uppercase">
                   Unfinished
                 </Badge>
               )}
@@ -117,11 +117,11 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
           <div className="absolute bottom-2.5 right-2.5 z-10">
             <BalloonClick>
               {isSupplemental ? (
-                <Badge variant="destructive" className="bg-red-500 text-white border-none text-[8px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-0.5 uppercase tracking-wider">
+                <Badge variant="destructive" className="bg-red-500 text-white border-none text-[7px] sm:text-[8px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full flex items-center gap-0.5 uppercase tracking-wider">
                   <ExternalLink className="w-2.5 h-2.5" /> EXT
                 </Badge>
               ) : (
-                <Badge variant="source" className="bg-surface/95 border border-border-divider text-text-primary text-[8px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-0.5 uppercase tracking-wider">
+                <Badge variant="source" className="bg-surface/95 border border-border-divider text-text-primary text-[7px] sm:text-[8px] font-bold px-1.5 sm:px-2.5 py-0.5 rounded-full flex items-center gap-0.5 uppercase tracking-wider">
                   <BookOpen className="w-2.5 h-2.5 text-accent" /> MD
                 </Badge>
               )}
@@ -133,17 +133,17 @@ export function MangaCard({ manga, namespace }: MangaCardProps) {
         <div className="px-1 flex flex-col justify-between flex-1">
           <div className="space-y-1">
             {/* Title */}
-            <h3 className="font-serif font-extrabold text-[13px] leading-snug line-clamp-2 break-words group-hover:text-accent transition-colors tracking-tight text-text-primary">
+            <h3 className="font-serif font-extrabold text-[11px] sm:text-xs md:text-[13px] leading-snug break-words group-hover:text-accent transition-colors tracking-tight text-text-primary">
               {manga.title}
             </h3>
 
             {/* Authors */}
-            <p className="text-[10px] font-mono text-text-muted truncate break-words">
+            <p className="text-[9px] sm:text-[10px] font-mono text-text-muted truncate break-words">
               {manga.authors.join(', ')}
             </p>
           </div>
 
-          <div className="mt-2 pt-2 border-t border-border-divider/60 flex items-center justify-between text-[9px] text-text-muted font-bold tracking-wider uppercase">
+          <div className="mt-1.5 pt-1.5 border-t border-border-divider/60 flex items-center justify-between text-[8px] sm:text-[9px] text-text-muted font-bold tracking-wider uppercase">
             <span>{manga.status}</span>
             {manga.year && (
               <span className="flex items-center gap-1">
