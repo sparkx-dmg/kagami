@@ -71,7 +71,6 @@ export default function Home() {
   }, [trending?.items]);
 
   const [activeIdx, setActiveIdx] = useState(0);
-  const [spotlightImageLoaded, setSpotlightImageLoaded] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (spotlightItems.length === 0) return;
@@ -102,54 +101,83 @@ export default function Home() {
       >
         <h1 className="sr-only">Dashboard</h1>
 
-        <div className="relative overflow-hidden w-full h-[180px] md:h-[440px] rounded-2xl md:rounded-3xl border border-border-divider bg-surface">
+        <div className="relative overflow-hidden w-full h-[200px] md:h-[420px] rounded-2xl md:rounded-3xl border border-border-divider bg-surface">
           <AnimatePresence mode="wait">
             {spotlightManga ? (
-              <motion.div 
-                key={spotlightManga.id} 
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ type: 'spring', stiffness: 220, damping: 26 }}
-                className="absolute inset-0 px-4 sm:px-8 md:px-14 py-4 sm:py-8 flex items-center overflow-hidden"
+              <motion.div
+                key={spotlightManga.id}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="absolute inset-0 flex overflow-hidden"
               >
+                {/* Cover image — right side, fills height, object-cover properly */}
                 {spotlightManga.cover && (
                   <>
-                    <div 
-                      className="absolute inset-0 bg-cover bg-top opacity-35 md:opacity-40 pointer-events-none transition-all duration-700"
-                      style={{ 
-                        backgroundImage: `url(${spotlightManga.cover})`,
-                      }}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={spotlightManga.cover}
+                      alt={spotlightManga.title}
+                      className="absolute inset-0 w-full h-full object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-bg-app via-bg-app/80 to-bg-app/20 z-0" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-bg-app via-bg-app/40 to-transparent z-0" />
+                    {/* Dark gradient from left so text is readable */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-bg-app/95 via-bg-app/75 to-bg-app/10 z-10" />
+                    {/* Bottom fade for extra depth */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-bg-app/70 via-transparent to-transparent z-10" />
                   </>
                 )}
 
-                <div className="relative z-10 flex flex-col justify-end gap-2 text-left w-full min-w-0 overflow-hidden h-full pb-1">
-                  <p className="text-[8px] text-accent/80 font-black uppercase tracking-[0.15em] flex items-center gap-1">
-                    <Sparkles className="w-2.5 h-2.5" /> Curated Spotlight
+                {/* Text content — left-anchored, full height */}
+                <div className="relative z-20 flex flex-col justify-end gap-1.5 md:gap-3 px-4 md:px-12 py-4 md:py-10 w-[70%] md:w-[55%]">
+                  <p className="text-[8px] md:text-[10px] text-accent font-black uppercase tracking-[0.18em] flex items-center gap-1">
+                    <Sparkles className="w-2.5 h-2.5 md:w-3 md:h-3 animate-pulse" /> Curated Spotlight
                   </p>
-                  <h2 className="text-sm sm:text-2xl md:text-5xl font-extrabold tracking-tighter text-text-primary font-serif leading-tight line-clamp-2 md:line-clamp-2">
+                  <h2 className="text-base md:text-4xl font-extrabold tracking-tight text-white font-serif leading-tight line-clamp-2 drop-shadow-lg">
                     {spotlightManga.title}
                   </h2>
-                  <div className="flex flex-row items-center gap-2 shrink-0">
-                    <Link href={`/manga/${spotlightManga.id}`} className="bg-text-primary text-bg-app hover:bg-text-primary/90 transition-colors font-sans font-black text-[9px] sm:text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center">
+                  <p className="hidden md:block text-sm text-white/60 font-sans leading-relaxed line-clamp-2">
+                    {spotlightManga.description || ''}
+                  </p>
+                  <div className="flex flex-row items-center gap-2 mt-1">
+                    <Link
+                      href={`/manga/${spotlightManga.id}`}
+                      className="bg-white text-black font-sans font-black text-[9px] md:text-[11px] uppercase tracking-widest px-3 md:px-5 py-1.5 md:py-2 rounded-full select-none whitespace-nowrap hover:bg-white/90 transition-colors"
+                    >
                       Read Now
                     </Link>
-                    <Link href="/search" className="border border-border-divider/60 text-text-primary/80 hover:text-text-primary hover:bg-bg-app/50 transition-colors font-sans font-bold text-[9px] sm:text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full cursor-pointer select-none whitespace-nowrap block text-center">
+                    <Link
+                      href="/search"
+                      className="border border-white/30 text-white/80 font-sans font-bold text-[9px] md:text-[11px] uppercase tracking-widest px-3 md:px-5 py-1.5 md:py-2 rounded-full select-none whitespace-nowrap hover:border-white/60 hover:text-white transition-colors"
+                    >
                       Explore
                     </Link>
                   </div>
                 </div>
+
+                {/* Slide counter — bottom right */}
+                {spotlightItems.length > 1 && (
+                  <div className="absolute bottom-3 right-4 z-20 flex items-center gap-1.5">
+                    {spotlightItems.slice(0, Math.min(spotlightItems.length, 8)).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setActiveIdx(i)}
+                        className={`h-1 rounded-full transition-all duration-300 ${
+                          i === activeIdx ? 'w-4 bg-white' : 'w-1.5 bg-white/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </motion.div>
             ) : (
-              <div className="h-[180px] md:h-[440px] bg-surface flex items-center justify-center font-sans text-xs text-text-muted">
-                Curating spotlight showcase...
+              <div className="absolute inset-0 bg-surface flex items-center justify-center font-sans text-xs text-text-muted animate-pulse">
+                Loading spotlight...
               </div>
             )}
           </AnimatePresence>
         </div>
+
 
 
 
